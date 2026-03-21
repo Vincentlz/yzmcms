@@ -142,6 +142,13 @@ class member extends common{
 			}else{
 				unset($_POST['password']);
 			}
+
+			if($_POST['overduedate'] == ''){
+				unset($_POST['overduedate']);
+			}else{
+				$_POST['overduedate'] = strtotime($_POST['overduedate']);
+			}
+			$_POST['vip'] = isset($_POST['vip']) && isset($_POST['overduedate']) ? 1 : 0;
 			
 			if(isset($_POST['del_userpic']) && $_POST['del_userpic'] == '1' && $_POST['userpic']){		
 				$userpic = YZMPHP_PATH.ltrim($_POST['userpic'], SITE_PATH);
@@ -150,12 +157,6 @@ class member extends common{
 				D('comment')->update(array('userpic'=>''),array('userid'=>$userid));
 			}
 			
-			if(isset($_POST['vip']) && $_POST['overduedate']!=''){
-				$_POST['vip'] = 1;
-				$_POST['overduedate'] = strtotime($_POST['overduedate']);
-			}else{
-				$_POST['vip'] = 0;
-			}
 			
 			D('member')->update($_POST, array('userid' => $userid), true);
 			D('member_detail')->update($_POST, array('userid' => $userid), true);

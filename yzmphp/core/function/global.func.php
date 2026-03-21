@@ -39,7 +39,7 @@ function https_request($url, $data = '', $array = true, $timeout = 2000, $header
 		$curl_error = curl_error($curl);
 		return $array ? array('status'=>0, 'message'=>$curl_error) : $curl_error;
 	}
-    curl_close($curl);
+    safe_curl_close($curl);
     return $array ? json_decode($output, true) : $output;
 }
 
@@ -559,7 +559,7 @@ function get_file_mime_type($file_path, $extension = null) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         if ($finfo) {
             $mime = finfo_file($finfo, $file_path);
-            finfo_close($finfo);
+            safe_finfo_close($finfo);
             if ($mime !== false && $mime !== '') {
                 return $mime;
             }
@@ -606,7 +606,7 @@ function file_down($filepath, $filename = '') {
     if(function_exists('finfo_open')) {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $filetype = finfo_file($finfo, $filepath);
-        finfo_close($finfo);
+        safe_finfo_close($finfo);
     } else {
         if (function_exists('mime_content_type')) {
             $filetype = mime_content_type($filepath);
@@ -914,7 +914,7 @@ function new_session_start(){
  * @param boolean $httponly  
  */
 function set_cookie($name, $value = '', $time = 0, $httponly = false) {
-	$time = $time > 0 ? SYS_TIME + $time : $time;
+	$time = $time ? SYS_TIME + $time : (C('cookie_ttl') ? SYS_TIME + C('cookie_ttl') : 0);
 	$name = C('cookie_pre').$name;
 	$value = is_array($value) ? 'in_yzmphp'.string_auth(json_encode($value),'ENCODE',md5(YZMPHP_PATH.C('db_pwd'))) : string_auth($value,'ENCODE',md5(YZMPHP_PATH.C('db_pwd')));
 	$httponly = $httponly ? $httponly : C('cookie_httponly');
@@ -1608,6 +1608,39 @@ function is_put(){
  */
 function is_ajax(){
 	return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH'])=='xmlhttprequest' ? true : false;
+}
+
+
+/**
+ * 安全关闭cURL句柄
+ *
+ * @param mixed $ch cURL句柄
+ * @return null
+ */
+function safe_curl_close($ch) {
+	if (!$ch) {
+        return;
+    }
+    if (PHP_VERSION_ID < 80500 && function_exists('curl_close')) {
+        @curl_close($ch);
+    }
+    return null;
+}
+
+/**
+ * 安全关闭文件信息句柄
+ *
+ * @param mixed $finfo 文件信息句柄
+ * @return null
+ */
+function safe_finfo_close($finfo) {
+	if (!$finfo) {
+        return;
+    }
+    if (PHP_VERSION_ID < 80500 && function_exists('finfo_close')) {
+        @finfo_close($finfo);
+    }
+    return null;
 }
 
 

@@ -33,6 +33,9 @@ class index{
 			if(empty($_POST['content'])) return_message('评论内容不能为空！', 0);
 			
 			$site = array_merge(get_config(), $this->siteinfo);
+			if(intval($site['is_comment']) == 0){
+				return_message('评论功能已关闭！', 0);
+			}
 			if($site['comment_code']){
 				!isset($_POST['code']) && return_message(L('code_error'), 0);
 				if(empty($_SESSION['code']) || strtolower($_POST['code'])!=$_SESSION['code']){

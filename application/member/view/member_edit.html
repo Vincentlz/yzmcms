@@ -92,8 +92,8 @@
 				<tr>
 					<td>vip会员</td>
 					<td class="yzm-explain-box">
-					是否为vip会员 <input name="vip" value="1" <?php if($data['vip']) echo 'checked'; ?> type="checkbox">&nbsp;&nbsp;
-					过期时间 <input type="text" class="input-text laydate-icon" style="width:175px;height:30px;" name="overduedate" value="<?php if($data['vip']) echo date('Y-m-d H:i:s',$data['overduedate']); ?>" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+					<label>是否为vip会员 <input name="vip" value="1" <?php if($data['vip']) echo 'checked'; ?> type="checkbox"></label>&nbsp;&nbsp;
+					到期时间 <input type="text" class="input-text laydate-icon" style="width:175px;height:30px;" name="overduedate" value="<?php if($data['vip']) echo date('Y-m-d H:i:s',$data['overduedate']); ?>" onclick="laydate({istime:true, format:'YYYY-MM-DD hh:mm:ss', min:'<?php echo date('Y-m-d H:i:s')?>'})">
 					<span class="yzm-explain">vip会员可以免积分查看付费内容</span>
 					</td>
 				</tr>
@@ -232,7 +232,11 @@
 	    if(isNaN($("input[name='point']").val()) || isNaN($("input[name='experience']").val())){
 		    layer.msg('积分和经验 只能为数字类型！');
 		    return false;
-		}		
+		}
+		if($('input[name="vip"]').prop('checked') && $("input[name='overduedate']").val()=='') {
+		    layer.msg('请选择VIP到期时间！');
+		    return false;
+		}
         return true;			
 	}
 </script> 

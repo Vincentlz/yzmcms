@@ -65,10 +65,10 @@ class index extends common{
 				 M('point')->point_add('1',get_config('login_point'),'0',$data['userid'],$data['username'],$data['experience']);		
 			}
 			
-			$where = '';
-			if($data['vip'] && $data['overduedate']<SYS_TIME)	$where .= '`vip`=0,';   //如果用户是vip用户，检查vip是否过期
+			$where = array();
+			if($data['vip'] && $data['overduedate']<SYS_TIME)	$where['vip'] = 0;   //如果用户是vip用户，检查vip是否过期
 			
-			$where .= '`lastip`="'.getip().'",`lastdate`="'.SYS_TIME.'",`loginnum`=`loginnum`+1';
+			$where = array_merge($where, array('lastip'=>getip(), 'lastdate'=>SYS_TIME, 'loginnum'=>'loginnum+1'));
 			$member->update($where, array('userid'=>$data['userid']));
 			$referer = isset($_POST['referer']) && !empty($_POST['referer']) ? urldecode($_POST['referer']) : U('member/index/init');
 			return_json(array('status'=>1, 'message'=>L('login_success'), 'url'=>$referer));

@@ -101,14 +101,16 @@ class comment extends common {
 	public function del_all() {
 		$comment = D('comment');
 		$data = $comment->field('id,commentid')->where(array('siteid'=>self::$siteid,'status'=>0,'reply'=>0))->select();
+		$i = 0;
 		foreach($data as $val){
 			$commentid = $val['commentid'];
 			$comment->delete(array('id'=>$val['id']));
 			$comment->query("UPDATE yzmcms_comment_data SET `total` = `total`-1 WHERE commentid='$commentid'");
 			$comment->delete(array('reply'=>$val['id']));
+			$i++;
 		}
-		return_json(array('status'=>1,'message'=>L('operation_success')));
-	}
+		return_json(array('status'=>1,'message'=>'共删除 '.$i.' 条评论！'));
+		}
 	
 	
 	/**

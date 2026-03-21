@@ -50,26 +50,27 @@ class index{
 				return_message(L('code_error'), 0);
 			}
 			$_SESSION['code'] = '';
-			
-			if($_POST['name']=='') return_message(L('lose_parameters'), 0);
- 			if($_POST['url']=='' || !preg_match('/^(http|https)?:\/\/(.*)/i', $_POST['url'])){
+
+			if(!isset($_POST['name']) || !isset($_POST['url']) || !isset($_POST['email'])) return_message(L('lose_parameters'), 0);
+			if($_POST['name']=='' || strlen($_POST['name'])>150) return_message(L('lose_parameters'), 0);
+ 			if($_POST['url']=='' || !preg_match('/^https?:\/\/(.*)/i', $_POST['url'])){
  				return_message(L('lose_parameters'), 0);
  			}
 			if($_POST['email']=='' || !is_email($_POST['email'])) return_message(L('mail_format_error'), 0);
-			
-			if(!preg_match('/^(http|https)?:\/\/(.*)/i', $_POST['logo']))  $_POST['logo'] = '';
+
+			$site_logo = isset($_POST['logo']) ? trim($_POST['logo']) : '';
+			if(!preg_match('/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|bmp)(\?.*)?$/i', $site_logo)) $site_logo = '';
 					
 			$data = array(
 				'siteid' => $this->siteid,
 				'name' => $_POST['name'],
 				'url' => $_POST['url'],
-				'logo' => $_POST['logo'],
-				'linktype' => $_POST['logo'] ? 1 : 0,
-				'username' => $_POST['username'],
+				'logo' => $site_logo,
+				'linktype' => $site_logo ? 1 : 0,
+				'username' => isset($_POST['username']) ? str_cut($_POST['username'], 36) : '',
 				'email' => $_POST['email'],
-				'msg' => $_POST['msg'],
+				'msg' => isset($_POST['msg']) ? $_POST['msg'] : '',
 				'addtime' => SYS_TIME,
-			
 			);										
 			D('link')->insert($data, true);
 			return_message(L('apply_link_success'));

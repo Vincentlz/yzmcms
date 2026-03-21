@@ -28,7 +28,7 @@
 			<?php if(!$stop){?>
 			<p><?php echo L('page_will');?><span style="color:red;font-weight:bold;margin:0 5px;"><?php echo $limittime;?></span><?php echo L('jump_seconds');?>...</p>
 			<?php }else{?>
-			<p><a href="<?php echo htmlspecialchars(HTTP_REFERER); ?>" title="<?php echo L('click_return');?>"><?php echo L('click_return');?></a></p>
+			<p><a href="<?php echo $safe_referer; ?>" title="<?php echo L('click_return');?>"><?php echo L('click_return');?></a></p>
 			<?php }?>
 		</div>
 	</div> 

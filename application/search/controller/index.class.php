@@ -24,17 +24,24 @@ class index{
 	 */
 	public function init(){	
 		$site = array_merge(get_config(), $this->siteinfo);
+		if(intval($site['is_search']) == 0){
+			return_message('站点未开启搜索功能！', 0);
+		}
 		
 		if(!isset($_GET['q']) || !is_string($_GET['q'])) showmsg(L('illegal_parameters'), 'stop');
 		$q = str_replace('%', '', new_html_special_chars(strip_tags(trim($_GET['q']))));
 		if(strlen($q) < 2 || strlen($q) > 30){
-			showmsg('你输入的字符长度需要是 2 到 30 个字符！', 'stop');
+			return_message('你输入的字符长度需要是 2 到 30 个字符！', 0);
 		}
 		$siteid = $this->siteid;
 		$modelid = isset($_GET['modelid']) ? intval($_GET['modelid']) : 0;
 		$catid = isset($_GET['catid']) ? intval($_GET['catid']) : 0;
 
 		list($seo_title, $keywords, $description) = get_site_seo($siteid, '‘'.$q.'’的搜索结果', $q);
+
+		if(!isset($_GET['page']) || intval($_GET['page'])==1){
+			D('search_log')->upsert(array('siteid'=>$siteid,'keyword'=>$q,'count'=>1,'inputtime'=>SYS_TIME,'updatetime'=>SYS_TIME), array('count'=>'count+1','updatetime'=>SYS_TIME));
+		}
 		include template($this->module, 'search');	
 	}
 	

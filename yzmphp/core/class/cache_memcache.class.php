@@ -40,7 +40,7 @@ class cache_memcache {
 	/**
 	 * 设置数据
 	 * @param	string   $name
-	 * @param	void 	 $value
+	 * @param	string|array 	 $value
 	 * @param	string   $expire
 	 * @return  void
 	 */

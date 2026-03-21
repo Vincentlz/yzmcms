@@ -53,7 +53,7 @@ class cache_redis{
 	/**
 	 * 设置数据
 	 * @param	string   $name
-	 * @param	void   $value 除对象类型外的所有类型数据
+	 * @param	string|array   $value 除对象类型外的所有类型数据
 	 * @param	int   $expire  有效时间（秒）
 	 * @return  void
 	 */

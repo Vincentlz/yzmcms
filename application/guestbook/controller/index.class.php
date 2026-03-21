@@ -103,6 +103,18 @@ class index{
 			return_message('QQ号码长度不正确！', 0);
 		}
 
+		if(strlen($data['title'])>250){
+			return_message('主题长度不能超过250个字符！', 0);
+		}
+
+		if(strlen($data['name'])>60){
+			return_message('姓名长度不能超过60个字符！', 0);
+		}
+
+		if(isset($data['address']) && strlen($data['address'])>150){
+			return_message('地址长度不能超过150个字符！', 0);
+		}
+
 		// 开启重复验证
 		$res = D('guestbook')->field('title,name,bookmsg')->order('id DESC')->find();
 		if($res && $data['title']==$res['title'] && $data['bookmsg']==$res['bookmsg']){

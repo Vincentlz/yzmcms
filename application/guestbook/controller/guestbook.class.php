@@ -150,11 +150,13 @@ class guestbook extends common {
 	public function del_all() {
 		$guestbook = D('guestbook');
 		$data = $guestbook->field('id')->where(array('siteid'=>self::$siteid,'ischeck'=>0,'replyid'=>0))->select();
+		$i = 0;
 		foreach($data as $val){
 			$guestbook->delete(array('id'=>$val['id']));
 			$guestbook->delete(array('replyid'=>$val['id']));
+			$i++;
 		}
-		return_json(array('status'=>1,'message'=>L('operation_success')));
+		return_json(array('status'=>1,'message'=>'共删除 '.$i.' 条留言！'));
 	}
 	
 }

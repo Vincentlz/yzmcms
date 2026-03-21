@@ -452,8 +452,10 @@ class yzm_tag{
 		$where = isset($data['where']) ? ' WHERE '.$data['where'] : '';
 		$order = isset($data['order']) ? ' ORDER BY '.$data['order'] : '';
 		$limit = isset($data['limit']) ? $data['limit'] : '20';
+		$config = isset($data['config'])&&is_array($data['config']) ? $data['config'] : array();
+		$linknum = isset($data['linknum']) ? intval($data['linknum']) : 0;
 
-		$db = D('admin');
+		$db = D('admin')->db($linknum, $config);;
 		$sql = $sql.$where;
 		if(isset($data['page'])){
 			yzm_base::load_sys_class('page','',0);

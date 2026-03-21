@@ -36,8 +36,12 @@ class upload {
 			}
 			$this->setoption($key, $val);
 		}
-		$this->setoption('filepath', YZMPHP_PATH.C('upload_file').'/'.date('Ym/d'));
-		$this->setoption('maxsize', get_config('upload_maxsize')*1024);
+		if(!isset($options['filepath'])){
+			$this->setoption('filepath', YZMPHP_PATH.C('upload_file').'/'.date('Ym/d'));
+		}
+		if(!isset($options['maxsize'])){
+			$this->setoption('maxsize', get_config('upload_maxsize')*1024);
+		}
 	}
 
 
@@ -89,7 +93,7 @@ class upload {
 	 * 用来检查文件上传的大小
 	 */
 	private function checkfilesize() {
-		if($this->filesize > $this->maxsize){
+		if($this->maxsize && $this->filesize > $this->maxsize){
 			$this->setoption('errornum', -2);
 			return false;
 		}else{

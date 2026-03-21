@@ -140,7 +140,7 @@
             <script src="../../common/static/plugin/layer/layer.js"></script>
             <script>
                 function TestDbPwd(){
-					var db_result = false;
+					var db_result = {status:0, msg:"未知错误"};
 
                     var dbType = $("#dbtype").val();;
                     var dbHost = $('#dbhost').val();
@@ -154,11 +154,10 @@
                         type: "POST",
                         url: url,
                         data: data,
+                        dataType: "json",
                         async: false, 
                         success: function(msg){
-                            if(msg==1){
-								db_result = true;
-                            }
+                            db_result = msg;
                         }
                     });
                     return db_result;
@@ -203,8 +202,9 @@
                         layer.msg('管理员密码长度必须为6-20位!', {icon:2});
                         return false;
                     }
-                    if(!TestDbPwd()){
-						layer.msg('数据库连接失败，请检查配置!', {icon:2});
+                    var test_db = TestDbPwd();
+                    if(!test_db.status){
+						layer.msg(test_db.msg, {icon:2});
                         return false;
                     }
                     return true;

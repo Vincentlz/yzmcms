@@ -4,7 +4,7 @@
  *
  * @author           袁志蒙  
  * @license          http://www.yzmcms.com
- * @lastmodify       2018-01-15
+ * @lastmodify       2026-01-15
  */
  
 header('Content-Type:text/html;charset=utf-8'); 
@@ -16,7 +16,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('APPDIR', _dir_path(substr(dirname(__FILE__), 0, -8)));
 define('SITEDIR', dirname(APPDIR).DIRECTORY_SEPARATOR);
-define("VERSION", 'YzmCMS V7.4');
+define("VERSION", 'YzmCMS V7.5');
 
 if(is_file(SITEDIR.'cache'.DIRECTORY_SEPARATOR.'install.lock')){
     exit("YzmCMS程序已运行安装，如果你确定要重新安装，请先从FTP中删除 cache/install.lock！");
@@ -124,11 +124,10 @@ switch ($step) {
             $dsn = 'mysql:host='.$_POST['dbhost'].';port='.intval($_POST['dbport']).';charset=utf8';
             try {
                 $pdo = new PDO($dsn, trim($_POST['dbuser']), trim($_POST['dbpw']));
-                echo 1;
+                die(json_encode(array('status'=>1)));
             } catch (PDOException $e) {
-                echo 0;
+                die(json_encode(array('status'=>0, 'msg'=>'连接数据库失败：'.$e->getMessage())));
             }
-            exit;
         }
         include ("./templates/s3.php");
         exit();
@@ -374,6 +373,8 @@ function check_url($url){
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     $output = curl_exec($curl);
     $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-    curl_close($curl);
+    if (PHP_VERSION_ID < 80500 && function_exists('curl_close')) {
+        @curl_close($curl);
+    }
     return $httpcode;
 }

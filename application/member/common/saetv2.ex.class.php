@@ -423,7 +423,7 @@ class SaeTOAuthV2 {
 			echo '=====response====='."\r\n";
 			print_r( $response );
 		}
-		curl_close ($ci);
+		safe_curl_close ($ci);
 		return $response;
 	}
 

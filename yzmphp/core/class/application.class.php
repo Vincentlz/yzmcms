@@ -81,6 +81,10 @@ class application {
 	public static function showmsg($msg, $gourl, $limittime) {
 		$gourl = empty($gourl) ? (strpos(HTTP_REFERER, SITE_URL)!==0 ? SITE_URL : htmlspecialchars(HTTP_REFERER, ENT_QUOTES, 'UTF-8')) : htmlspecialchars($gourl, ENT_QUOTES, 'UTF-8');
 		$stop = $gourl!='stop' ? false : true;
+		$safe_referer = SITE_URL;
+		if(filter_var(HTTP_REFERER, FILTER_VALIDATE_URL) && (strpos(HTTP_REFERER, 'http://') === 0 || strpos(HTTP_REFERER, 'https://') === 0)){
+			$safe_referer = htmlspecialchars(HTTP_REFERER, ENT_QUOTES, 'UTF-8');
+		}
 		include(YP_PATH.'core'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'message.tpl');
 	}
 

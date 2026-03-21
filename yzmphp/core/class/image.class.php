@@ -4,7 +4,7 @@
  *
  * @author           袁志蒙  
  * @license          http://www.yzmcms.com
- * @lastmodify       2016-08-17
+ * @lastmodify       2025-12-06
  */
 
 class image {
@@ -154,8 +154,8 @@ class image {
 		$imagefun = 'image'.($type=='jpg' ? 'jpeg' : $type);
 		if(empty($filename)) $filename  = substr($image, 0, strrpos($image, '.')).$suffix.'.'.$type;
 		$imagefun($thumbimg, $filename);
-		imagedestroy($thumbimg);
-		imagedestroy($srcimg);
+		$this->safe_imagedestroy($thumbimg);
+		$this->safe_imagedestroy($srcimg);
 		if($ftp) {
 			@unlink($image);
 		}
@@ -201,8 +201,8 @@ class image {
 		$imagefun = 'image'.($type=='jpg' ? 'jpeg' : $type);
 		if(empty($filename)) $filename  = substr($image, 0, strrpos($image, '.')).'.'.$type;
 		$imagefun($thumbimg, $filename);
-		imagedestroy($thumbimg);
-		imagedestroy($srcimg);
+		$this->safe_imagedestroy($thumbimg);
+		$this->safe_imagedestroy($srcimg);
 
 		return self::info($filename);
     }
@@ -256,6 +256,8 @@ class image {
 					break;
 				case 3 :
 					$water_img = imagecreatefrompng($w_img);
+					imagealphablending($water_img, true);
+					imagesavealpha($water_img, true);
 					break;
 				default :
 					return;
@@ -315,7 +317,16 @@ class image {
 		}
 		if($ifwaterimage) {
 			if($water_info[2] == 3) {
-				imagecopy($source_img, $water_img, $wx, $wy, 0, 0, $width, $height);
+				$temp_img = imagecreatetruecolor($source_w, $source_h);
+				imagealphablending($temp_img, false);
+				$transparent = imagecolorallocatealpha($temp_img, 0, 0, 0, 127);
+				imagefill($temp_img, 0, 0, $transparent);
+				imagealphablending($temp_img, true);
+				imagecopyresampled($temp_img, $source_img, 0, 0, 0, 0, $source_w, $source_h, $source_w, $source_h);
+				imagecopyresampled($temp_img, $water_img, $wx, $wy, 0, 0, $width, $height, $width, $height);
+				imagesavealpha($temp_img, true);
+				$this->safe_imagedestroy($source_img);
+				$source_img = $temp_img;
 			} else {
 				imagecopymerge($source_img, $water_img, $wx, $wy, 0, 0, $width, $height, $this->w_pct);
 			}
@@ -348,15 +359,28 @@ class image {
 			unset($water_info);
 		}
 		if(isset($water_img)) {
-			imagedestroy($water_img);
+			$this->safe_imagedestroy($water_img);
 		}
 		unset($source_info);
-		imagedestroy($source_img);
+		$this->safe_imagedestroy($source_img);
 		return true;
 	}
 
 	public function check($image) {
 		return extension_loaded('gd') && preg_match("/\.(jpg|jpeg|gif|png)/i", $image, $m) && is_file($image) && function_exists('imagecreatefrom'.($m[1] == 'jpg' ? 'jpeg' : $m[1]));
+	}
+
+	/**
+	 * 安全销毁图像资源
+	 */
+	protected function safe_imagedestroy($image) {
+		if (!$image) {
+            return;
+        }
+        if (PHP_VERSION_ID >= 80500) {
+			return;
+		}
+		@imagedestroy($image);
 	}
 	
 }

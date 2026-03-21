@@ -48,7 +48,7 @@ define('IS_CGI', (0 === strpos(PHP_SAPI,'cgi') || false !== strpos(PHP_SAPI,'fcg
 if(IS_CGI) {
 	//CGI/FASTCGI模式下
 	$_temp  = explode('.php', $_SERVER['SCRIPT_NAME']);
-	define('PHP_FILE', rtrim(str_replace($_SERVER['HTTP_HOST'], '', $_temp[0].'.php'), '/'));
+	define('PHP_FILE', rtrim(str_replace(HTTP_HOST, '', $_temp[0].'.php'), '/'));
 }else {
 	define('PHP_FILE', rtrim($_SERVER['SCRIPT_NAME'], '/'));
 }

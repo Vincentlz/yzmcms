@@ -121,7 +121,7 @@ function downfile($url, $md5){
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         $content = curl_exec($ch);
-        curl_close($ch);
+        safe_curl_close($ch);
     } else {
         $content = @file_get_contents($url);
     }

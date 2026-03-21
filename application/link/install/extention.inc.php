@@ -13,6 +13,6 @@ $menu->insert(array('name'=>'审核友情链接', 'parentid'=>$parentid, 'm'=>'l
 
 //以下代码可选，预装数据
 $link = D('link');
-$link->insert(array('name'=>'YzmCMS官方网站','url'=>'http://www.yzmcms.com','username'=>'袁志蒙','email'=>'214243830@qq.com','status'=>'1','addtime'=>SYS_TIME));
-$link->insert(array('name'=>'YzmCMS官方博客','url'=>'http://blog.yzmcms.com/','username'=>'袁志蒙','email'=>'214243830@qq.com','status'=>'1','addtime'=>SYS_TIME));
+$link->insert(array('name'=>'YzmCMS官方网站','url'=>'http://www.yzmcms.com','username'=>'袁志蒙','email'=>'214243830@qq.com','msg'=>'','status'=>'1','addtime'=>SYS_TIME));
+$link->insert(array('name'=>'YzmCMS官方博客','url'=>'http://blog.yzmcms.com/','username'=>'袁志蒙','email'=>'214243830@qq.com','msg'=>'','status'=>'1','addtime'=>SYS_TIME));
 

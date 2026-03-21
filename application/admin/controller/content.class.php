@@ -229,7 +229,7 @@ class content extends common {
 				);
 				curl_setopt_array($ch, $options);
 				$result = curl_exec($ch);
-				curl_close($ch);
+				safe_curl_close($ch);
 				$result = json_decode($result, true);
 				if(isset($result['success'])){
 					$content->wheres(array('id'=>array('in', $_POST['ids'], 'intval')))->update(array('is_push' => 1));

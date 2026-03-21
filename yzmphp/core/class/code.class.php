@@ -157,7 +157,9 @@ class code{
         $this->create();
         header("content-type:image/png");
         imagepng($this->img);
-        imagedestroy($this->img);
+        if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+            imagedestroy($this->img);
+        }
     }
 
 	

@@ -275,7 +275,7 @@ class db_mysql{
 		}
 		$data = $this->filter_field($data, $primary, $field);
 		$fields = $values = array();
-		foreach ($data AS $key => $val){
+		foreach ($data as $key => $val){
 			$fields[] = '`'. $key .'`';
 			$values[] = "'" . $this->safe_data($val, $filter) . "'";
 		}		
@@ -303,7 +303,7 @@ class db_mysql{
 		$values = array();
 		foreach ($datas as $data){
 			$value = array();
-			foreach ($data as $key => $val) {
+			foreach ($data as $val) {
 				$value[] = "'" . $this->safe_data($val, $filter) . "'";
 			}
 			$values[] = '('.implode(',', $value).')';
@@ -363,10 +363,14 @@ class db_mysql{
 		if(is_array($data)){
 			$data = $this->filter_field($data, $primary, $field);
 			$sets = array();
-			foreach ($data AS $key => $val){
-				$sets[] = '`'. $key .'` = \''. $this->safe_data($val, $filter) .'\'';
+			foreach ($data as $key => $val){
+				if(is_string($val) && preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*\s*[+\-]\s*[0-9]+$/', $val)) {
+					$sets[] = '`'. $key .'` = '. $val;
+				} else {
+					$sets[] = '`'. $key .'` = \''. $this->safe_data($val, $filter) .'\'';
+				}
 			}
-			$value = implode(', ', $sets);				
+			$value = implode(', ', $sets);			
 		}else{
 			$value = $data;		
 		}	
@@ -377,7 +381,55 @@ class db_mysql{
 		return mysql_affected_rows();	
 	}
 
-	
+
+	/**
+	 * 执行插入或更新记录操作
+	 * @param $insert_data  要插入的数据，参数为数组
+	 * @param $update_data  要更新的数据，参数为数组或字符串
+	 * @param $filter       如果为真值[1为真] 则开启实体转义
+	 * @param $primary 		是否过滤主键
+	 * @param $field 		是否过滤非表字段
+	 * @return int          返回受影响行数
+	 */
+	public function upsert($insert_data, $update_data, $filter = false, $primary = true, $field = true){
+		if(!is_array($insert_data)) {
+			$this->geterr('upsert function First parameter Must be array!');
+			return false;
+		}
+		
+		$insert_data = $this->filter_field($insert_data, $primary, $field);
+		$fields = $values = array();
+		foreach ($insert_data as $key => $val){
+			$fields[] = '`'. $key .'`';
+			$values[] = "'" . $this->safe_data($val, $filter) . "'";
+		}
+		
+		if(empty($fields)) return false;
+		
+		if(is_array($update_data)) {
+			$update_data = $this->filter_field($update_data, $primary, $field);
+			$updates = array();
+			foreach ($update_data as $key => $val){
+				if(is_string($val) && preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*\s*[+\-]\s*[0-9]+$/', $val)) {
+					$updates[] = '`'. $key .'` = '. $val;
+				} else {
+					$updates[] = '`'. $key .'` = \''. $this->safe_data($val, $filter) .'\'';
+				}
+			}
+			$update_str = implode(', ', $updates);
+		} else {
+			$update_str = $update_data;
+		}
+		
+		if(empty($update_str)) return false;
+		
+		$sql = 'INSERT INTO '. $this->get_tablename() .' ('. implode(', ', $fields) .') VALUES ('. implode(', ', $values) .') ON DUPLICATE KEY UPDATE '. $update_str;
+		
+		$this->execute($sql);
+		return mysql_affected_rows();
+	}
+
+
 	/**
 	 * 获取查询多条结果，返回二维数组
 	 * @return array

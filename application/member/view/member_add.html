@@ -32,9 +32,10 @@
 			 <li><label><span class="c-red">*</span>积分：</label>
 			 	<input type="text" class="input" name="point" value="0" placeholder="请输入积分">
 			 </li>
-			 <li><label>vip会员：</label>
-			 <input name="vip" value="1" type="checkbox"><span class="span_input" title="vip会员可以免积分查看付费内容"> 是否为vip会员
-			 &nbsp;过期时间 <input type="text" class="input-text laydate-icon" style="width:175px;height:30px;margin-left:5px" name="overduedate" value="" onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})"></span>
+			 <li class="yzm-explain-box" style="height:30px;line-height:30px;display:flex;"><label>vip会员：</label>
+			 <label style="width:auto"><input name="vip" value="1" type="checkbox" onclick="change_vip(this)"> 是</label>&nbsp;&nbsp;
+			 <span id="vip_overduedate" style="display:none">到期时间 <input type="text" class="input-text laydate-icon" style="width:175px;height:30px;margin:0 5px" name="overduedate" value="" onclick="laydate({istime:true, format:'YYYY-MM-DD hh:mm:ss', min:'<?php echo date('Y-m-d H:i:s')?>'})"></span>
+			 <span class="yzm-explain">vip会员可以免积分查看付费内容</span>
 			 </li>
 		</ul>
 		<div class="footer_btn">
@@ -54,6 +55,14 @@
 			$("input[name='nickname']").val($username);
 		}
 	}
+
+	function change_vip(obj){
+		if(obj.checked){
+			$("#vip_overduedate").show();
+		}else{
+			$("#vip_overduedate").hide();
+		}
+	}
 	
 	function dosub(obj){
 		 if(obj.username.value==''){
@@ -71,6 +80,10 @@
 		 if(obj.point.value=='' || isNaN(obj.point.value)){
 			 layer.msg('积分点数只能为数字类型！', {icon:2});
 			 return false;
+		 }
+		 if($('input[name="vip"]').prop('checked') && $("input[name='overduedate']").val()=='') {
+			layer.msg('请选择VIP到期时间！', {icon:2});
+			return false;
 		 }
         $.ajax({
             type: 'POST',

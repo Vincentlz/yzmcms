@@ -286,7 +286,7 @@
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">是否开启留言验证码：</label>
+					<label class="form-label col-xs-4 col-sm-2">开启留言验证码：</label>
 					<div class="formControls col-xs-8 col-sm-9 yzm-explain-box">
 						<label class="label_radio"><input name="words_code" type="radio" <?php echo $data["words_code"]? 'checked' : '' ?> value="1"> 是</label>
 						<label class="label_radio"><input name="words_code" type="radio" <?php echo $data["words_code"]? '' : 'checked' ?> value="0"> 否</label>
@@ -294,31 +294,45 @@
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">是否开启申请友情链接：</label>
+					<label class="form-label col-xs-4 col-sm-2">开启申请友情链接：</label>
 					<div class="formControls col-xs-8 col-sm-9">
 						<label class="label_radio"><input name="is_link" type="radio" <?php echo $data["is_link"]? 'checked' : '' ?> value="1"> 是</label>
 						<label class="label_radio"><input name="is_link" type="radio" <?php echo $data["is_link"]? '' : 'checked' ?> value="0"> 否</label>
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">是否开启评论验证码：</label>
+					<label class="form-label col-xs-4 col-sm-2">开启站点评论功能：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<label class="label_radio"><input name="is_comment" type="radio" <?php echo $data["is_comment"]? 'checked' : '' ?> value="1"> 是</label>
+						<label class="label_radio"><input name="is_comment" type="radio" <?php echo $data["is_comment"]? '' : 'checked' ?> value="0"> 否</label>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">开启评论验证码：</label>
 					<div class="formControls col-xs-8 col-sm-9">
 						<label class="label_radio"><input name="comment_code" type="radio" <?php echo $data["comment_code"]? 'checked' : '' ?> value="1"> 是</label>
 						<label class="label_radio"><input name="comment_code" type="radio" <?php echo $data["comment_code"]? '' : 'checked' ?> value="0"> 否</label>
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">是否开启评论审核：</label>
+					<label class="form-label col-xs-4 col-sm-2">开启评论审核：</label>
 					<div class="formControls col-xs-8 col-sm-9">
 						<label class="label_radio"><input name="comment_check" type="radio" <?php echo $data["comment_check"]? 'checked' : '' ?> value="1"> 是</label>
 						<label class="label_radio"><input name="comment_check" type="radio" <?php echo $data["comment_check"]? '' : 'checked' ?> value="0"> 否</label>
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">是否允许游客评论：</label>
+					<label class="form-label col-xs-4 col-sm-2">允许游客评论：</label>
 					<div class="formControls col-xs-8 col-sm-9">
 						<label class="label_radio"><input name="comment_tourist" type="radio" <?php echo $data["comment_tourist"]? 'checked' : '' ?> value="1"> 是</label>
 						<label class="label_radio"><input name="comment_tourist" type="radio" <?php echo $data["comment_tourist"]? '' : 'checked' ?> value="0"> 否</label>
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-2">开启站点搜索功能：</label>
+					<div class="formControls col-xs-8 col-sm-9">
+						<label class="label_radio"><input name="is_search" type="radio" <?php echo $data["is_search"]? 'checked' : '' ?> value="1"> 是</label>
+						<label class="label_radio"><input name="is_search" type="radio" <?php echo $data["is_search"]? '' : 'checked' ?> value="0"> 否</label>
 					</div>
 				</div>
 				<div class="row cl">
@@ -328,7 +342,7 @@
 					</div>
 				</div>
 				<div class="row cl">
-					<label class="form-label col-xs-4 col-sm-2">前端IP黑名单列表：<br><span style="color:#888;font-size:12px;margin-right:10px;display:inline-block;">匹配IP段用“*”占位<br>多个IP用“,”分隔</span></label>
+					<label class="form-label col-xs-4 col-sm-2">站点IP黑名单列表：<br><span style="color:#888;font-size:12px;margin-right:10px;display:inline-block;">匹配IP段用“*”占位<br>多个IP用“,”分隔</span></label>
 					<div class="formControls col-xs-8 col-sm-9">
 						<textarea class="textarea" name="blacklist_ip" placeholder="IP黑名单用户将无法发布站点留言及内容评论"><?php echo $data["blacklist_ip"];?></textarea>
 					</div>

@@ -124,11 +124,11 @@
 				  </tr>
 				  <tr>
 				  	<td>服务器域名 </td>
-				  	<td><?php echo $_SERVER['HTTP_HOST'];?></td>
+				  	<td><?php echo isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '---';?></td>
 				  </tr>
 				  <tr>
 				  	<td>服务器端口 </td>
-				  	<td><?php echo $_SERVER['SERVER_PORT'];?></td>
+				  	<td><?php echo isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '---';?></td>
 				  </tr>
 				  <tr>
 				  	<td>服务器剩余空间 </td>

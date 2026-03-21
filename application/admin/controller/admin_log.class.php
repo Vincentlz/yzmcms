@@ -113,9 +113,9 @@ class admin_log extends common {
 		if(isset($_GET['dosubmit'])){	
 			$where = array('logintime<' => strtotime('-1 month'));
 			if($_SESSION['roleid'] > 1) $where['adminname'] = $_SESSION['adminname'];
-
-			if(D('admin_login_log')->delete($where)){	  		
-				showmsg(L('operation_success'), '', 1);		 
+			$effect = D('admin_login_log')->delete($where);
+			if($effect){	  		
+				showmsg('共删除 '.$effect.' 条数据', '', 1);
 			}else{	
 				showmsg("没有数据被删除！");				 
 			}			

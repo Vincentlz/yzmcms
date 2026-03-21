@@ -85,7 +85,10 @@ class index{
 		$db = D($tablename);
 		$data = $db->where(array('id'=>$id))->find();
 		if(!$data || $data['status'] != 1 || $data['catid'] != $catid){
-			if(!APP_DEBUG) send_http_status(404);
+			if(!APP_DEBUG){
+				is_file(YZMPHP_PATH.C('error_page')) && application::halt(L('content_not_existent'));
+				send_http_status(404);
+			}
 			showmsg(L('content_not_existent'),'stop');
 		}
 		extract($data);
