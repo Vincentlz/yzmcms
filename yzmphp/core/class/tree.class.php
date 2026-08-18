@@ -27,7 +27,7 @@ class tree {
 
     /**
      * 构造函数，初始化类
-     * @param array 二维数组，例如：
+     * @param array $arr 二维数组，例如：
      * array(
      *      1 => array('id'=>'1','parentid'=>0,'name'=>'一级栏目一'),
      *      2 => array('id'=>'2','parentid'=>0,'name'=>'一级栏目二'),
@@ -46,7 +46,7 @@ class tree {
 
     /**
      * 得到父级数组
-     * @param int
+     * @param int $myid 表示获得这个ID下的所有父级
      * @return array
      */
     public function get_parent($myid){

@@ -16,7 +16,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define('APPDIR', _dir_path(substr(dirname(__FILE__), 0, -8)));
 define('SITEDIR', dirname(APPDIR).DIRECTORY_SEPARATOR);
-define("VERSION", 'YzmCMS V7.5');
+define("VERSION", 'YzmCMS V7.6');
 
 if(is_file(SITEDIR.'cache'.DIRECTORY_SEPARATOR.'install.lock')){
     exit("YzmCMS程序已运行安装，如果你确定要重新安装，请先从FTP中删除 cache/install.lock！");
@@ -126,9 +126,10 @@ switch ($step) {
                 $pdo = new PDO($dsn, trim($_POST['dbuser']), trim($_POST['dbpw']));
                 die(json_encode(array('status'=>1)));
             } catch (PDOException $e) {
-                die(json_encode(array('status'=>0, 'msg'=>'连接数据库失败：'.$e->getMessage())));
+                die(json_encode(array('status'=>0, 'msg'=>'连接数据库失败，请检查配置！', 'error'=>$e->getMessage())));
             }
         }
+        $dbname = str_replace(array(' ','.'), array('_',''), strtolower(VERSION));
         include ("./templates/s3.php");
         exit();
 
@@ -144,9 +145,9 @@ switch ($step) {
             $dbName = trim($_POST['dbname']);
             $dbUser = trim($_POST['dbuser']);
             $dbPwd = trim($_POST['dbpw']);
-            $dbPrefix = empty($_POST['dbprefix']) ? 'yzm_' : str_replace(array('"','\'',','), '', trim($_POST['dbprefix']));
-            $engine = isset($_POST['engine']) ? $_POST['engine'] : 'myisam';
-            $charset = isset($_POST['charset']) ? $_POST['charset'] : 'utf8';
+            $dbPrefix = preg_match('/^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){0,29}$/', trim($_POST['dbprefix'])) ? trim($_POST['dbprefix']) : 'yzm_';
+            $engine = isset($_POST['engine'])&&in_array($_POST['engine'], array('myisam', 'innodb')) ? $_POST['engine'] : 'myisam';
+            $charset = isset($_POST['charset'])&&in_array($_POST['charset'], array('utf8', 'utf8mb4')) ? $_POST['charset'] : 'utf8';
             $adminname = trim($_POST['manager_adminname']);
             $password = trim($_POST['manager_pwd']);
             $config = array();
@@ -249,13 +250,12 @@ switch ($step) {
                 $message = '<span style="color:red">添加管理员失败！</span>';
             }
 			
-			//插入网站配置
-			$sitename = trim($_POST['sitename']);
+            //插入网站配置
+            $sitename = trim($_POST['sitename']);
             $siteurl = trim($_POST['siteurl']);
-			$sql = "UPDATE {$dbPrefix}config  SET value='{$sitename}' WHERE id=1";
-			$pdo->exec($sql);
-			$sql = "UPDATE {$dbPrefix}config  SET value='{$siteurl}' WHERE id=2";
-            $pdo->exec($sql);
+            $stmt = $pdo->prepare("UPDATE `{$dbPrefix}config` SET `value` = :value WHERE `id` = :id");
+            $stmt->execute(array(':value' => $sitename, ':id' => 1));
+            $stmt->execute(array(':value' => $siteurl, ':id' => 2));
 			
 			//写入配置文件
             set_config($config);
@@ -268,7 +268,6 @@ switch ($step) {
         exit;
 
     case '5':
-        include ("./templates/s5.php");
         @touch(SITEDIR.'cache'.DIRECTORY_SEPARATOR.'install.lock');
         if(is_file(SITEDIR.'install.php')) @unlink(SITEDIR.'install.php');
 		if(is_file(SITEDIR.'index.html')) @unlink(SITEDIR.'index.html');
@@ -276,6 +275,7 @@ switch ($step) {
         foreach ($files as $v){
             @unlink($v);
         }
+        include ("./templates/s5.php");
         exit;
 }
 

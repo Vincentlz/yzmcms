@@ -14,18 +14,18 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `yzm_admin`;
 CREATE TABLE `yzm_admin` (
   `adminid` mediumint(6) unsigned NOT NULL AUTO_INCREMENT,
-  `adminname` varchar(30) NOT NULL DEFAULT '',
+  `adminname` varchar(100) NOT NULL DEFAULT '',
   `password` varchar(32) NOT NULL DEFAULT '',
   `roleid` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `rolename` varchar(30) NOT NULL DEFAULT '',
-  `realname` varchar(30) NOT NULL DEFAULT '',
-  `nickname` varchar(30) NOT NULL DEFAULT '',
-  `email` varchar(30) NOT NULL DEFAULT '',
+  `rolename` varchar(100) NOT NULL DEFAULT '',
+  `realname` varchar(100) NOT NULL DEFAULT '',
+  `nickname` varchar(100) NOT NULL DEFAULT '',
+  `email` varchar(60) NOT NULL DEFAULT '',
   `logintime` int(10) unsigned NOT NULL DEFAULT '0',
   `loginip` varchar(15) NOT NULL DEFAULT '',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
   `errnum` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `addpeople` varchar(30) NOT NULL DEFAULT '',
+  `addpeople` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`adminid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -39,11 +39,11 @@ CREATE TABLE `yzm_admin` (
 DROP TABLE IF EXISTS `yzm_admin_log`;
 CREATE TABLE `yzm_admin_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `module` varchar(15) NOT NULL DEFAULT '',
-  `controller` varchar(20) NOT NULL DEFAULT '',
+  `module` varchar(80) NOT NULL DEFAULT '',
+  `controller` varchar(90) NOT NULL DEFAULT '',
   `querystring` varchar(255) NOT NULL DEFAULT '',
   `adminid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `adminname` varchar(30) NOT NULL DEFAULT '',
+  `adminname` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(15) NOT NULL DEFAULT '',
   `logtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -61,13 +61,13 @@ CREATE TABLE `yzm_admin_log` (
 DROP TABLE IF EXISTS `yzm_admin_login_log`;
 CREATE TABLE `yzm_admin_login_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `adminname` varchar(30) NOT NULL DEFAULT '',
+  `adminname` varchar(100) NOT NULL DEFAULT '',
   `logintime` int(10) unsigned NOT NULL DEFAULT '0',
   `loginip` varchar(15) NOT NULL DEFAULT '',
-  `address` varchar(30) NOT NULL DEFAULT '',
+  `address` varchar(150) NOT NULL DEFAULT '',
   `password` varchar(30) NOT NULL DEFAULT '',
   `loginresult` tinyint(1) NOT NULL DEFAULT '0' COMMENT '登录结果1为登录成功0为登录失败',
-  `cause` varchar(20) NOT NULL DEFAULT '',
+  `cause` varchar(30) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `admin_index` (`adminname`,`loginresult`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -82,7 +82,7 @@ CREATE TABLE `yzm_admin_login_log` (
 DROP TABLE IF EXISTS `yzm_admin_role`;
 CREATE TABLE `yzm_admin_role` (
   `roleid` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `rolename` varchar(50) NOT NULL,
+  `rolename` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `system` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `disabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -103,9 +103,9 @@ INSERT INTO `yzm_admin_role` VALUES ('3', '发布人员', '发布人员', '1', '
 DROP TABLE IF EXISTS `yzm_admin_role_priv`;
 CREATE TABLE `yzm_admin_role_priv` (
   `roleid` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `m` char(20) NOT NULL DEFAULT '',
-  `c` char(20) NOT NULL DEFAULT '',
-  `a` char(30) NOT NULL DEFAULT '',
+  `m` char(90) NOT NULL DEFAULT '',
+  `c` char(90) NOT NULL DEFAULT '',
+  `a` char(90) NOT NULL DEFAULT '',
   `data` char(100) NOT NULL DEFAULT '',
   KEY `roleid` (`roleid`,`m`,`c`,`a`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -121,7 +121,7 @@ DROP TABLE IF EXISTS `yzm_adver`;
 CREATE TABLE `yzm_adver` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1文字2代码3图片',
-  `title` varchar(100) NOT NULL DEFAULT '',
+  `title` varchar(150) NOT NULL DEFAULT '',
   `url` varchar(200) NOT NULL DEFAULT '',
   `text` text NULL,
   `img` varchar(200) NOT NULL DEFAULT '',
@@ -150,7 +150,7 @@ CREATE TABLE `yzm_all_content` (
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `id` int(10) unsigned NOT NULL DEFAULT '0',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` char(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `title` varchar(150) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `updatetime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -169,7 +169,7 @@ CREATE TABLE `yzm_all_content` (
 -- Records of yzm_all_content
 -- ----------------------------
 INSERT INTO `yzm_all_content` VALUES ('1', '0', '1', '2', '1', '1', 'yzmcms', 'YZMPHP轻量级开源框架 V2.9', '1710000726', '1710000726', '/guanfangxinwen/1.html', '', '1', '1');
-INSERT INTO `yzm_all_content` VALUES ('2', '0', '1', '2', '2', '1', 'yzmcms', 'YzmCMS v7.5正式版发布', '1774071381', '1774071381', '/guanfangxinwen/2.html', '', '1', '1');
+INSERT INTO `yzm_all_content` VALUES ('2', '0', '1', '2', '2', '1', 'yzmcms', 'YzmCMS v7.6正式版发布', '1786995010', '1786995010', '/guanfangxinwen/2.html', '', '1', '1');
 
 -- ----------------------------
 -- Table structure for yzm_article
@@ -179,8 +179,8 @@ CREATE TABLE `yzm_article` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
-  `nickname` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
+  `nickname` varchar(60) NOT NULL DEFAULT '',
   `title` varchar(200) NOT NULL DEFAULT '',
   `color` char(9) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -210,7 +210,7 @@ CREATE TABLE `yzm_article` (
 -- Records of yzm_article
 -- ----------------------------
 INSERT INTO `yzm_article` VALUES ('1', '2', '1', 'yzmcms', '袁志蒙', 'YZMPHP轻量级开源框架 V2.9', '', '1710000726', '1710000726', 'yzmphp,php框架,轻量级框架,mvc框架', '简介：YZMPHP是一款免费开源的轻量级PHP框架，框架完全采用面向对象的设计思想，并且是基于MVC的三层设计模式。具有部署和应用及为简单、效...', '100', '<p><strong>简介:</strong></p><p>YZMPHP是一款免费开源的轻量级PHP框架，框架完全采用面向对象的设计思想，并且是基于MVC的三层设计模式。具有部署和应用及为简单、效率高、速度快，扩展性和可维护性都很好等特点。</p><p>2016年12月19日完成框架的1.0版本，经过近两年的磨炼与成长，今日发布YZMPHP 2.0版本，该框架已经被多家公司企业采用和认可，是一款简单强大的PHP框架。上手快、框架源码简单明了结构清析，使得项目开发更加容易和方便，使用YZMPHP框架适合开发BBS、电子商城、SNS、CMS、Blog、企业门户等任何的中小型系统！</p><p><br/></p><p><strong>特点：</strong></p><p>简洁、高效、轻量级、高性能</p><p>软件环境：Apache/Nginx/IIS</p><p>PHP：支持PHP5.2以上的所有版本</p><p><br/></p><p><strong>YZMPHP  更新日志：</strong></p><p>1.新增：框架命令模式,可自定义或新增命令;</p><p>2.新增：缓存类型配置，支持类型:file/redis/memcache;</p><p>3.新增：系统URL路由映射重写;</p><p>4.新增：DB类库事务处理;</p><p>5.新增：支持切换和链接其他数据库;</p><p>6.新增：DB类库多种操作数据库方法;</p><p>7.新增：Nginx支持PATHINFO模式配置;</p><p>8.新增：系统函数库多种方法;</p><p>9.新增：支持捕捉致命错误;</p><p>10.优化：数据对象单例模式;</p><p>11.优化：支持join多表链接查询;</p><p>12.修复：框架漏洞一枚;</p><p>本次更新优化内容包括但不限于以上所列举的项！</p><p><br/></p>', '原创', '', '/guanfangxinwen/1.html', '4', '1', '1', '10', '0', '0', '1', '0');
-INSERT INTO `yzm_article` VALUES ('2', '2', '1', 'yzmcms', '袁志蒙', 'YzmCMS v7.5正式版发布', '#ff0000', '1774071381', '1774071381', 'cms系统,yzmcms最新版,yzmcms下载,php建站系统,轻量级开源', '产品说明：YzmCMS是一款轻量级开源内容管理系统，它采用OOP（面向对象）方式自主开发的框架。基于PHP+Mysql架构，并采用MVC框架式开发的一...', '100', '<p><strong style=\"color: red;\">产品说明：</strong></p><p>YzmCMS是一款轻量级开源内容管理系统，它采用OOP（面向对象）方式自主开发的框架。基于PHP+Mysql架构，并采用MVC框架式开发的一款高效开源的内容管理系统，可运行在Linux、Windows、MacOSX、Solaris等各种平台上。</p><p>它可以让您不需要任何专业技术轻松搭建您需要的网站，操作简单，很容易上手，快捷方便的后台操作让您10分钟就会建立自己的爱站。在同类产品的比较中，YzmCMS更是凸显出了体积轻巧、功能强大、源码简洁、系统安全等特点，无论你是做企业网站、新闻网站、个人博客、门户网站、行业网站、电子商城等，它都能完全胜任，而且还提供了非常方便的二次开发体系，是一款全能型的建站系统！</p><p><br/></p><p>下载地址：<a href=\"http://www.yzmcms.com/xiazai/\" target=\"_blank\" style=\"color:blue\">官方下载</a></p>', '原创', '', '/guanfangxinwen/2.html', '1,4', '1', '1', '1', '0', '0', '1', '0');
+INSERT INTO `yzm_article` VALUES ('2', '2', '1', 'yzmcms', '袁志蒙', 'YzmCMS v7.6正式版发布', '#ff0000', '1786995010', '1786995010', 'cms系统,yzmcms最新版,yzmcms下载,php建站系统,轻量级开源', '产品说明：YzmCMS是一款轻量级开源内容管理系统，它采用OOP（面向对象）方式自主开发的框架。基于PHP+Mysql架构，并采用MVC框架式开发的一...', '100', '<p><strong style=\"color: red;\">产品说明：</strong></p><p>YzmCMS是一款轻量级开源内容管理系统，它采用OOP（面向对象）方式自主开发的框架。基于PHP+Mysql架构，并采用MVC框架式开发的一款高效开源的内容管理系统，可运行在Linux、Windows、MacOSX、Solaris等各种平台上。</p><p>它可以让您不需要任何专业技术轻松搭建您需要的网站，操作简单，很容易上手，快捷方便的后台操作让您10分钟就会建立自己的爱站。在同类产品的比较中，YzmCMS更是凸显出了体积轻巧、功能强大、源码简洁、系统安全等特点，无论你是做企业网站、新闻网站、个人博客、门户网站、行业网站、电子商城等，它都能完全胜任，而且还提供了非常方便的二次开发体系，是一款全能型的建站系统！</p><p><br/></p><p>下载地址：<a href=\"http://www.yzmcms.com/xiazai/\" target=\"_blank\" style=\"color:blue\">官方下载</a></p>', '原创', '', '/guanfangxinwen/2.html', '1,4', '1', '1', '1', '0', '0', '1', '0');
 
 -- ----------------------------
 -- Table structure for yzm_attachment
@@ -229,7 +229,7 @@ CREATE TABLE `yzm_attachment` (
   `isimage` tinyint(1) unsigned NOT NULL DEFAULT '1',
   `downloads` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `uploadtime` int(10) unsigned NOT NULL DEFAULT '0',
   `uploadip` char(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -271,7 +271,7 @@ CREATE TABLE `yzm_banner` (
 DROP TABLE IF EXISTS `yzm_banner_type`;
 CREATE TABLE `yzm_banner_type` (
   `tid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(30) NOT NULL DEFAULT '',
+  `name` char(150) NOT NULL DEFAULT '',
   PRIMARY KEY (`tid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -286,12 +286,12 @@ DROP TABLE IF EXISTS `yzm_category`;
 CREATE TABLE `yzm_category` (
   `catid` smallint(5) NOT NULL AUTO_INCREMENT COMMENT '栏目ID',
   `siteid` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `catname` varchar(60) NOT NULL DEFAULT '' COMMENT '栏目名称',
+  `catname` varchar(150) NOT NULL DEFAULT '' COMMENT '栏目名称',
   `modelid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '模型id',
   `parentid` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '父级id',
   `arrparentid` varchar(255) NOT NULL DEFAULT '' COMMENT '父级路径',
   `arrchildid` mediumtext NOT NULL COMMENT '子栏目id集合',
-  `catdir` varchar(50) NOT NULL DEFAULT '' COMMENT '栏目目录',
+  `catdir` varchar(80) NOT NULL DEFAULT '' COMMENT '栏目目录',
   `catimg` varchar(150) NOT NULL DEFAULT '' COMMENT '栏目图片',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '栏目类型:0普通栏目1单页2外部链接',
   `listorder` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '栏目排序',
@@ -300,13 +300,13 @@ CREATE TABLE `yzm_category` (
   `display` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '在导航显示',
   `pclink` varchar(100) NOT NULL DEFAULT '' COMMENT '电脑版地址',
   `domain` varchar(100) NOT NULL DEFAULT '' COMMENT '绑定域名',
-  `entitle` varchar(80) NOT NULL DEFAULT '' COMMENT '英文标题',
-  `subtitle` varchar(60) NOT NULL DEFAULT '' COMMENT '副标题',
-  `mobname` varchar(50) NOT NULL DEFAULT '' COMMENT '手机版名称',
-  `category_template` varchar(30) NOT NULL DEFAULT '' COMMENT '频道页模板',
-  `list_template` varchar(30) NOT NULL DEFAULT '' COMMENT '列表页模板',
-  `show_template` varchar(30) NOT NULL DEFAULT '' COMMENT '内容页模板',
-  `seo_title` varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO标题',
+  `entitle` varchar(100) NOT NULL DEFAULT '' COMMENT '英文标题',
+  `subtitle` varchar(100) NOT NULL DEFAULT '' COMMENT '副标题',
+  `mobname` varchar(100) NOT NULL DEFAULT '' COMMENT '手机版名称',
+  `category_template` varchar(60) NOT NULL DEFAULT '' COMMENT '频道页模板',
+  `list_template` varchar(60) NOT NULL DEFAULT '' COMMENT '列表页模板',
+  `show_template` varchar(60) NOT NULL DEFAULT '' COMMENT '内容页模板',
+  `seo_title` varchar(150) NOT NULL DEFAULT '' COMMENT 'SEO标题',
   `seo_keywords` varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键字',
   `seo_description` varchar(250) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   PRIMARY KEY (`catid`),
@@ -350,7 +350,7 @@ CREATE TABLE `yzm_collection_content` (
 DROP TABLE IF EXISTS `yzm_collection_node`;
 CREATE TABLE `yzm_collection_node` (
   `nodeid` smallint(6) unsigned NOT NULL AUTO_INCREMENT COMMENT '采集节点ID',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '节点名称',
+  `name` varchar(180) NOT NULL DEFAULT '' COMMENT '节点名称',
   `lastdate` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '最后采集时间',
   `sourcecharset` varchar(8) NOT NULL DEFAULT '' COMMENT '采集点字符集',
   `sourcetype` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '网址类型:1序列网址,2单页',
@@ -387,7 +387,7 @@ CREATE TABLE `yzm_comment` (
   `siteid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `commentid` char(30) NOT NULL DEFAULT '',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `userpic` varchar(100) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `ip` char(15) NOT NULL DEFAULT '',
@@ -430,9 +430,9 @@ CREATE TABLE `yzm_comment_data` (
 DROP TABLE IF EXISTS `yzm_config`;
 CREATE TABLE `yzm_config` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '配置名称',
+  `name` varchar(150) NOT NULL DEFAULT '' COMMENT '配置名称',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '配置类型',
-  `title` varchar(60) NOT NULL DEFAULT '' COMMENT '配置说明',
+  `title` varchar(150) NOT NULL DEFAULT '' COMMENT '配置说明',
   `value` text COMMENT '配置值',
   `fieldtype` varchar(20) NOT NULL DEFAULT '' COMMENT '字段类型',
   `setting` text COMMENT '字段设置',
@@ -525,9 +525,9 @@ CREATE TABLE `yzm_download` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
-  `nickname` varchar(30) NOT NULL DEFAULT '',
-  `title` varchar(180) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
+  `nickname` varchar(60) NOT NULL DEFAULT '',
+  `title` varchar(200) NOT NULL DEFAULT '',
   `color` char(9) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `updatetime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -551,7 +551,7 @@ CREATE TABLE `yzm_download` (
   `systems` varchar(100) NOT NULL DEFAULT '' COMMENT '平台',
   `language` varchar(30) NOT NULL DEFAULT '' COMMENT '语言',
   `version` varchar(30) NOT NULL DEFAULT '' COMMENT '版本',
-  `filesize` varchar(10) NOT NULL DEFAULT '' COMMENT '文件大小',
+  `filesize` varchar(20) NOT NULL DEFAULT '' COMMENT '文件大小',
   `classtype` varchar(30) NOT NULL DEFAULT '' COMMENT '软件类型',
   `stars` varchar(10) NOT NULL DEFAULT '' COMMENT '评分等级',
   PRIMARY KEY (`id`),
@@ -591,11 +591,11 @@ CREATE TABLE `yzm_guestbook` (
   `siteid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `title` varchar(255) NOT NULL DEFAULT '' COMMENT '主题',
   `booktime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '名字',
-  `email` varchar(40) NOT NULL DEFAULT '' COMMENT '留言人电子邮箱',
+  `name` varchar(150) NOT NULL DEFAULT '' COMMENT '名字',
+  `email` varchar(60) NOT NULL DEFAULT '' COMMENT '留言人电子邮箱',
   `phone` varchar(11) NOT NULL DEFAULT '' COMMENT '留言人电话',
   `qq` varchar(11) NOT NULL DEFAULT '' COMMENT '留言人qq',
-  `address` varchar(150) NOT NULL DEFAULT '' COMMENT '留言人地址',
+  `address` varchar(180) NOT NULL DEFAULT '' COMMENT '留言人地址',
   `bookmsg` text NOT NULL COMMENT '内容',
   `ip` varchar(20) NOT NULL DEFAULT '' COMMENT 'ip地址',
   `ischeck` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否审核',
@@ -618,8 +618,8 @@ CREATE TABLE `yzm_guestbook` (
 DROP TABLE IF EXISTS `yzm_keyword_link`;
 CREATE TABLE `yzm_keyword_link` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `keyword` varchar(36) NOT NULL DEFAULT '' COMMENT '关键字',
-  `url` varchar(100) NOT NULL DEFAULT '' COMMENT '地址',
+  `keyword` varchar(150) NOT NULL DEFAULT '' COMMENT '关键字',
+  `url` varchar(150) NOT NULL DEFAULT '' COMMENT '地址',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -640,8 +640,8 @@ CREATE TABLE `yzm_link` (
   `url` varchar(255) NOT NULL DEFAULT '',
   `logo` varchar(255) NOT NULL DEFAULT '',
   `msg` text NOT NULL,
-  `username` varchar(50) NOT NULL DEFAULT '',
-  `email` varchar(40) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
+  `email` varchar(100) NOT NULL DEFAULT '',
   `listorder` smallint(5) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0未通过,1正常,2未审核',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -662,14 +662,14 @@ INSERT INTO `yzm_link` VALUES ('3', '0', '0', '0', 'YzmCMS官方博客', 'http:/
 DROP TABLE IF EXISTS `yzm_member`;
 CREATE TABLE `yzm_member` (
   `userid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `password` char(32) NOT NULL DEFAULT '',
   `regdate` int(10) unsigned NOT NULL DEFAULT '0',
   `lastdate` int(10) unsigned NOT NULL DEFAULT '0',
   `regip` char(15) NOT NULL DEFAULT '',
   `lastip` char(15) NOT NULL DEFAULT '',
   `loginnum` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `email` char(32) NOT NULL DEFAULT '',
+  `email` varchar(60) NOT NULL DEFAULT '',
   `groupid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `amount` decimal(8,2) unsigned NOT NULL DEFAULT '0.00' COMMENT '金钱',
   `experience` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '经验',
@@ -678,8 +678,8 @@ CREATE TABLE `yzm_member` (
   `vip` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `overduedate` int(10) unsigned NOT NULL DEFAULT '0',
   `email_status` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  `problem` varchar(39) NOT NULL DEFAULT '' COMMENT '安全问题',
-  `answer` varchar(30) NOT NULL DEFAULT '' COMMENT '答案',
+  `problem` varchar(60) NOT NULL DEFAULT '' COMMENT '安全问题',
+  `answer` varchar(60) NOT NULL DEFAULT '' COMMENT '答案',
   PRIMARY KEY (`userid`),
   UNIQUE KEY `username` (`username`),
   KEY `email` (`email`)
@@ -696,7 +696,7 @@ DROP TABLE IF EXISTS `yzm_member_authorization`;
 CREATE TABLE `yzm_member_authorization` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `authname` varchar(10) NOT NULL DEFAULT '',
+  `authname` varchar(30) NOT NULL DEFAULT '',
   `token` varchar(60) NOT NULL DEFAULT '',
   `userinfo` varchar(255) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -716,15 +716,15 @@ DROP TABLE IF EXISTS `yzm_member_detail`;
 CREATE TABLE `yzm_member_detail` (
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `sex` varchar(6) NOT NULL DEFAULT '',
-  `realname` varchar(30) NOT NULL DEFAULT '' COMMENT '真实姓名',
+  `realname` varchar(60) NOT NULL DEFAULT '' COMMENT '真实姓名',
   `nickname` varchar(120) NOT NULL DEFAULT '',
   `qq` char(11) NOT NULL DEFAULT '',
   `mobile` char(11) NOT NULL DEFAULT '',
   `phone` varchar(25) NOT NULL DEFAULT '',
   `userpic` varchar(100) NOT NULL DEFAULT '',
   `birthday` char(10) NOT NULL DEFAULT '' COMMENT '生日',
-  `industry` varchar(60) NOT NULL DEFAULT '' COMMENT '行业',
-  `area` varchar(60) NOT NULL DEFAULT '',
+  `industry` varchar(100) NOT NULL DEFAULT '' COMMENT '行业',
+  `area` varchar(100) NOT NULL DEFAULT '',
   `motto` varchar(255) NOT NULL DEFAULT '' COMMENT '个性签名',
   `introduce` text COMMENT '个人简介',
   `guest` int(10) unsigned NOT NULL DEFAULT '0',
@@ -744,7 +744,7 @@ CREATE TABLE `yzm_member_follow` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '用户id',
   `followid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '被关注者id',
-  `followname` varchar(30) NOT NULL DEFAULT '' COMMENT '被关注者用户名',
+  `followname` varchar(60) NOT NULL DEFAULT '' COMMENT '被关注者用户名',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`)
@@ -760,12 +760,12 @@ CREATE TABLE `yzm_member_follow` (
 DROP TABLE IF EXISTS `yzm_member_group`;
 CREATE TABLE `yzm_member_group` (
   `groupid` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(21) NOT NULL DEFAULT '',
+  `name` varchar(150) NOT NULL DEFAULT '',
   `experience` smallint(6) unsigned NOT NULL DEFAULT '0',
   `icon` char(30) NOT NULL DEFAULT '' COMMENT '图标',
   `authority` char(12) NOT NULL DEFAULT '' COMMENT '1短消息,2发表评论,3发表内容',
   `max_amount` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '每日最大投稿量',
-  `description` char(100) NOT NULL DEFAULT '',
+  `description` varchar(250) NOT NULL DEFAULT '',
   `is_system` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '系统内置',
   PRIMARY KEY (`groupid`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -787,7 +787,7 @@ CREATE TABLE `yzm_member_guest` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `space_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `guest_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `guest_name` varchar(30) NOT NULL DEFAULT '',
+  `guest_name` varchar(60) NOT NULL DEFAULT '',
   `guest_pic` varchar(100) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `ip` varchar(15) NOT NULL DEFAULT '',
@@ -805,12 +805,12 @@ CREATE TABLE `yzm_member_guest` (
 DROP TABLE IF EXISTS `yzm_menu`;
 CREATE TABLE `yzm_menu` (
   `id` smallint(6) unsigned NOT NULL AUTO_INCREMENT,
-  `name` char(40) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
   `parentid` smallint(6) NOT NULL DEFAULT '0',
-  `m` char(20) NOT NULL DEFAULT '',
-  `c` char(20) NOT NULL DEFAULT '',
-  `a` char(30) NOT NULL DEFAULT '',
-  `data` char(100) NOT NULL DEFAULT '',
+  `m` varchar(60) NOT NULL DEFAULT '',
+  `c` varchar(60) NOT NULL DEFAULT '',
+  `a` varchar(60) NOT NULL DEFAULT '',
+  `data` varchar(150) NOT NULL DEFAULT '',
   `listorder` smallint(6) unsigned NOT NULL DEFAULT '0',
   `display` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -1088,10 +1088,10 @@ INSERT INTO `yzm_menu` VALUES ('321', '删除指定次数以下的记录', '319'
 DROP TABLE IF EXISTS `yzm_message`;
 CREATE TABLE `yzm_message` (
   `messageid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `send_from` varchar(30) NOT NULL DEFAULT '' COMMENT '发件人',
-  `send_to` varchar(30) NOT NULL DEFAULT '' COMMENT '收件人',
+  `send_from` varchar(60) NOT NULL DEFAULT '' COMMENT '发件人',
+  `send_to` varchar(60) NOT NULL DEFAULT '' COMMENT '收件人',
   `message_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `subject` char(80) NOT NULL DEFAULT '' COMMENT '主题',
+  `subject` varchar(250) NOT NULL DEFAULT '' COMMENT '主题',
   `content` text NOT NULL,
   `replyid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '回复的id',
   `status` tinyint(1) unsigned DEFAULT '1' COMMENT '1正常0隐藏',
@@ -1129,7 +1129,7 @@ DROP TABLE IF EXISTS `yzm_message_group`;
 CREATE TABLE `yzm_message_group` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `groupid` varchar(20) NOT NULL DEFAULT '' COMMENT '用户组id',
-  `subject` char(80) NOT NULL DEFAULT '',
+  `subject` varchar(250) NOT NULL DEFAULT '',
   `content` text NOT NULL COMMENT '内容',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '1',
@@ -1147,10 +1147,10 @@ DROP TABLE IF EXISTS `yzm_model`;
 CREATE TABLE `yzm_model` (
   `modelid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `siteid` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `name` char(30) NOT NULL DEFAULT '',
-  `tablename` varchar(30) NOT NULL DEFAULT '',
-  `alias` varchar(30) NOT NULL DEFAULT '',
-  `description` varchar(100) NOT NULL DEFAULT '',
+  `name` char(150) NOT NULL DEFAULT '',
+  `tablename` varchar(50) NOT NULL DEFAULT '',
+  `alias` varchar(50) NOT NULL DEFAULT '',
+  `description` varchar(250) NOT NULL DEFAULT '',
   `setting` text,
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `items` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -1178,15 +1178,15 @@ DROP TABLE IF EXISTS `yzm_model_field`;
 CREATE TABLE `yzm_model_field` (
   `fieldid` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `modelid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `field` varchar(30) NOT NULL DEFAULT '',
-  `name` varchar(30) NOT NULL DEFAULT '',
+  `field` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(50) NOT NULL DEFAULT '',
   `tips` varchar(100) NOT NULL DEFAULT '',
   `setting_catid` varchar(100) NOT NULL DEFAULT '',
   `minlength` int(10) unsigned NOT NULL DEFAULT '0',
   `maxlength` int(10) unsigned NOT NULL DEFAULT '0',
   `errortips` varchar(100) NOT NULL DEFAULT '',
   `fieldtype` varchar(20) NOT NULL DEFAULT '',
-  `defaultvalue` varchar(30) NOT NULL DEFAULT '',
+  `defaultvalue` varchar(50) NOT NULL DEFAULT '',
   `setting` text,
   `isrequired` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `issystem` tinyint(1) unsigned NOT NULL DEFAULT '0',
@@ -1249,7 +1249,7 @@ INSERT INTO `yzm_model_field` VALUES ('37', '4', 'introduce', '单页介绍', ''
 DROP TABLE IF EXISTS `yzm_module`;
 CREATE TABLE `yzm_module` (
   `module` varchar(15) NOT NULL DEFAULT '',
-  `name` varchar(30) NOT NULL DEFAULT '',
+  `name` varchar(60) NOT NULL DEFAULT '',
   `iscore` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `version` varchar(50) NOT NULL DEFAULT '',
   `description` varchar(255) NOT NULL DEFAULT '',
@@ -1264,22 +1264,22 @@ CREATE TABLE `yzm_module` (
 -- ----------------------------
 -- Records of yzm_module
 -- ----------------------------
-INSERT INTO `yzm_module` VALUES ('admin', '后台模块', '1', '3.0', '后台模块', '', '0', '0', '2016-08-27', '2026-01-11');
+INSERT INTO `yzm_module` VALUES ('admin', '后台模块', '1', '3.0', '后台模块', '', '0', '0', '2016-08-27', '2026-05-11');
 INSERT INTO `yzm_module` VALUES ('index', '前台模块', '1', '2.0', '前台模块', '', '0', '0', '2016-09-21', '2025-12-03');
 INSERT INTO `yzm_module` VALUES ('api', '接口模块', '1', '2.0', '为整个系统提供接口', '', '0', '0', '2016-08-28', '2026-01-08');
 INSERT INTO `yzm_module` VALUES ('install', '安装模块', '1', '2.0', 'CMS安装模块', '', '0', '0', '2016-10-28', '2026-01-11');
 INSERT INTO `yzm_module` VALUES ('attachment', '附件模块', '1', '2.0', '附件模块', '', '0', '0', '2016-10-10', '2025-05-10');
 INSERT INTO `yzm_module` VALUES ('member', '会员模块', '1', '3.0', '会员模块', '', '0', '0', '2016-09-21', '2025-11-21');
-INSERT INTO `yzm_module` VALUES ('guestbook', '留言模块', '1', '2.0', '留言板模块', '', '0', '0', '2016-10-25', '2025-10-25');
-INSERT INTO `yzm_module` VALUES ('search', '搜索模块', '1', '2.0', '搜索模块', '', '0', '0', '2016-11-21', '2026-01-11');
+INSERT INTO `yzm_module` VALUES ('guestbook', '留言模块', '1', '2.0', '留言板模块', '', '0', '0', '2016-10-25', '2026-06-25');
+INSERT INTO `yzm_module` VALUES ('search', '搜索模块', '1', '2.0', '搜索模块', '', '0', '0', '2016-11-21', '2026-06-11');
 INSERT INTO `yzm_module` VALUES ('link', '友情链接', '0', '2.0', '友情链接模块', '', '0', '0', '2016-12-11', '2025-02-10');
 INSERT INTO `yzm_module` VALUES ('comment', '评论模块', '1', '2.0', '全站评论', '', '0', '0', '2017-01-05', '2025-06-25');
 INSERT INTO `yzm_module` VALUES ('mobile', '手机模块', '1', '2.0', '手机模块', '', '0', '0', '2017-04-05', '2025-01-13');
-INSERT INTO `yzm_module` VALUES ('banner', '轮播图管理', '0', '2.0', '轮播图管理模块', '', '0', '0', '2017-05-12', '2025-02-10');
+INSERT INTO `yzm_module` VALUES ('banner', '轮播图管理', '0', '2.0', '轮播图管理模块', '', '0', '0', '2017-05-12', '2026-08-10');
 INSERT INTO `yzm_module` VALUES ('collection', '采集模块', '1', '1.0', '采集模块', '', '0', '0', '2017-08-16', '2022-08-16');
 INSERT INTO `yzm_module` VALUES ('wechat', '微信模块', '1', '2.0', '微信模块', '', '0', '0', '2017-11-03', '2022-11-03');
 INSERT INTO `yzm_module` VALUES ('diyform', '自定义表单模块', '1', '2.0', '自定义表单模块', '', '0', '0', '2018-01-15', '2023-05-11');
-INSERT INTO `yzm_module` VALUES ('adver', '广告管理', '0', '2.0', '广告管理模块', '', '0', '0', '2018-01-18', '2025-01-18');
+INSERT INTO `yzm_module` VALUES ('adver', '广告管理', '0', '2.0', '广告管理模块', '', '0', '0', '2018-01-18', '2026-08-13');
 INSERT INTO `yzm_module` VALUES ('pay', '支付模块', '1', '1.0', '支付模块', '', '0', '0', '2018-07-03', '2023-07-03');
 
 -- ----------------------------
@@ -1291,7 +1291,7 @@ CREATE TABLE `yzm_order` (
   `order_sn` char(18) NOT NULL DEFAULT '' COMMENT '订单号',
   `status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '订单状态0未付款1已付款',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
+  `username` varchar(60) NOT NULL DEFAULT '' COMMENT '用户名',
   `addtime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '下单时间',
   `paytime` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '支付时间',
   `paytype` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '支付方式1支付宝2微信',
@@ -1318,7 +1318,7 @@ CREATE TABLE `yzm_order` (
 DROP TABLE IF EXISTS `yzm_page`;
 CREATE TABLE `yzm_page` (
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `title` varchar(160) NOT NULL DEFAULT '',
+  `title` varchar(255) NOT NULL DEFAULT '',
   `introduce` varchar(255) NOT NULL DEFAULT '',
   `content` text,
   `updatetime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1338,15 +1338,15 @@ CREATE TABLE `yzm_pay` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `trade_sn` char(18) NOT NULL DEFAULT '' COMMENT '订单号',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `money` char(8) NOT NULL DEFAULT '' COMMENT '金钱或积分的量',
   `creat_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `msg` varchar(30) NOT NULL DEFAULT '' COMMENT '类型说明',
+  `msg` varchar(50) NOT NULL DEFAULT '' COMMENT '类型说明',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1积分,2金钱',
   `ip` char(15) NOT NULL DEFAULT '',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '1成功,0失败',
   `remarks` varchar(250) NOT NULL DEFAULT '' COMMENT '备注说明',
-  `adminnote` varchar(30) NOT NULL DEFAULT '' COMMENT '如是后台操作,管理员姓名',
+  `adminnote` varchar(60) NOT NULL DEFAULT '' COMMENT '如是后台操作,管理员姓名',
   PRIMARY KEY (`id`),
   KEY `userid` (`userid`),
   KEY `trade_sn` (`trade_sn`)
@@ -1369,8 +1369,8 @@ CREATE TABLE `yzm_pay_mode` (
   `enabled` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `author` varchar(60) NOT NULL DEFAULT '',
   `version` varchar(10) NOT NULL DEFAULT '',
-  `action` varchar(30) NOT NULL DEFAULT '' COMMENT '支付调用方法',
-  `template` varchar(30) NOT NULL DEFAULT '',
+  `action` varchar(60) NOT NULL DEFAULT '' COMMENT '支付调用方法',
+  `template` varchar(60) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
@@ -1388,10 +1388,10 @@ CREATE TABLE `yzm_pay_spend` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `trade_sn` char(18) NOT NULL DEFAULT '' COMMENT '订单号',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
   `money` char(8) NOT NULL DEFAULT '' COMMENT '金钱或积分的量',
   `creat_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `msg` varchar(30) NOT NULL DEFAULT '' COMMENT '类型说明',
+  `msg` varchar(60) NOT NULL DEFAULT '' COMMENT '类型说明',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1积分,2金钱',
   `ip` char(15) NOT NULL DEFAULT '',
   `remarks` varchar(250) NOT NULL DEFAULT '' COMMENT '备注说明',
@@ -1412,13 +1412,13 @@ CREATE TABLE `yzm_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `userid` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `username` varchar(30) NOT NULL DEFAULT '',
-  `nickname` varchar(30) NOT NULL DEFAULT '',
-  `title` varchar(180) NOT NULL DEFAULT '',
+  `username` varchar(60) NOT NULL DEFAULT '',
+  `nickname` varchar(60) NOT NULL DEFAULT '',
+  `title` varchar(200) NOT NULL DEFAULT '',
   `color` char(9) NOT NULL DEFAULT '',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
   `updatetime` int(10) unsigned NOT NULL DEFAULT '0',
-  `keywords` varchar(100) NOT NULL DEFAULT '',
+  `keywords` varchar(150) NOT NULL DEFAULT '',
   `description` varchar(255) NOT NULL DEFAULT '',
   `click` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `content` text NOT NULL,
@@ -1458,10 +1458,10 @@ CREATE TABLE `yzm_tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `siteid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `catid` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `tag` varchar(30) NOT NULL DEFAULT '',
+  `tag` varchar(100) NOT NULL DEFAULT '',
   `total` mediumint(9) unsigned NOT NULL DEFAULT '0',
   `click` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `seo_title` varchar(100) NOT NULL DEFAULT '' COMMENT 'SEO标题',
+  `seo_title` varchar(150) NOT NULL DEFAULT '' COMMENT 'SEO标题',
   `seo_keywords` varchar(200) NOT NULL DEFAULT '' COMMENT 'SEO关键字',
   `seo_description` varchar(255) NOT NULL DEFAULT '' COMMENT 'SEO描述',
   `inputtime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1498,9 +1498,9 @@ CREATE TABLE `yzm_tag_content` (
 DROP TABLE IF EXISTS `yzm_urlrule`;
 CREATE TABLE `yzm_urlrule` (
   `urlruleid` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '规则名称',
-  `urlrule` varchar(100) NOT NULL DEFAULT '' COMMENT 'URL规则',
-  `route` varchar(100) NOT NULL DEFAULT '' COMMENT '指向的路由',
+  `name` varchar(150) NOT NULL DEFAULT '' COMMENT '规则名称',
+  `urlrule` varchar(150) NOT NULL DEFAULT '' COMMENT 'URL规则',
+  `route` varchar(150) NOT NULL DEFAULT '' COMMENT '指向的路由',
   `listorder` tinyint(3) unsigned NOT NULL DEFAULT '50' COMMENT '优先级排序',
   PRIMARY KEY (`urlruleid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1535,7 +1535,7 @@ DROP TABLE IF EXISTS `yzm_wechat_auto_reply`;
 CREATE TABLE `yzm_wechat_auto_reply` (
   `id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1关键字回复2自动回复3关注回复',
-  `keyword` varchar(64) NOT NULL DEFAULT '' COMMENT '关键字回复的关键字',
+  `keyword` varchar(150) NOT NULL DEFAULT '' COMMENT '关键字回复的关键字',
   `keyword_type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1完全匹配0模糊匹配',
   `relation_id` varchar(15) NOT NULL DEFAULT '' COMMENT '图文回复的关联内容ID',
   `content` text NOT NULL COMMENT '文本回复的内容',
@@ -1553,7 +1553,7 @@ CREATE TABLE `yzm_wechat_auto_reply` (
 DROP TABLE IF EXISTS `yzm_wechat_group`;
 CREATE TABLE `yzm_wechat_group` (
   `id` mediumint(9) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(150) NOT NULL DEFAULT '',
   `count` mediumint(8) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1590,7 +1590,7 @@ DROP TABLE IF EXISTS `yzm_wechat_media`;
 CREATE TABLE `yzm_wechat_media` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `originname` varchar(50) NOT NULL DEFAULT '',
-  `filename` varchar(50) NOT NULL DEFAULT '',
+  `filename` varchar(100) NOT NULL DEFAULT '',
   `filepath` char(200) NOT NULL DEFAULT '',
   `type` char(6) NOT NULL DEFAULT '',
   `media_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0临时素材,1永久素材',
@@ -1611,7 +1611,7 @@ DROP TABLE IF EXISTS `yzm_wechat_menu`;
 CREATE TABLE `yzm_wechat_menu` (
   `id` mediumint(8) NOT NULL AUTO_INCREMENT,
   `parentid` mediumint(6) NOT NULL DEFAULT '0',
-  `name` varchar(48) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1关键字2跳转',
   `keyword` varchar(128) NOT NULL DEFAULT '',
   `url` varchar(255) NOT NULL DEFAULT '',
@@ -1653,7 +1653,7 @@ CREATE TABLE `yzm_wechat_message` (
 DROP TABLE IF EXISTS `yzm_wechat_scan`;
 CREATE TABLE `yzm_wechat_scan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `scan` varchar(65) NOT NULL DEFAULT '' COMMENT '场景',
+  `scan` varchar(150) NOT NULL DEFAULT '' COMMENT '场景',
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '0永久,1临时',
   `expire_time` char(7) NOT NULL DEFAULT '0' COMMENT '二维码有效时间',
   `ticket` varchar(150) NOT NULL DEFAULT '',
@@ -1674,15 +1674,15 @@ CREATE TABLE `yzm_wechat_user` (
   `openid` char(100) NOT NULL DEFAULT '',
   `groupid` smallint(5) unsigned NOT NULL DEFAULT '0',
   `subscribe` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '1关注0取消',
-  `nickname` varchar(50) NOT NULL DEFAULT '',
+  `nickname` varchar(100) NOT NULL DEFAULT '',
   `sex` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `city` char(50) NOT NULL DEFAULT '',
   `province` char(50) NOT NULL DEFAULT '',
   `country` char(50) NOT NULL DEFAULT '',
   `headimgurl` char(255) NOT NULL DEFAULT '',
   `subscribe_time` int(10) unsigned NOT NULL DEFAULT '0',
-  `remark` varchar(50) NOT NULL DEFAULT '',
-  `scan` varchar(30) NOT NULL DEFAULT '' COMMENT '来源场景',
+  `remark` varchar(100) NOT NULL DEFAULT '',
+  `scan` varchar(100) NOT NULL DEFAULT '' COMMENT '来源场景',
   PRIMARY KEY (`wechatid`),
   UNIQUE KEY `openid` (`openid`),
   KEY `groupid` (`groupid`),

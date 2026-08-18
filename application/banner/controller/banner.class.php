@@ -93,7 +93,7 @@ class banner extends common {
 	public function edit() {
 		$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 		if(isset($_POST['dosubmit'])) {
-			if(D('banner')->update($_POST, array('id'=>$id))){
+			if(D('banner')->update($_POST, array('id'=>$id), true)){
 				showmsg(L('operation_success'), U('init'), 1);
 			}else{
 				showmsg(L('operation_failure'));

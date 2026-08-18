@@ -68,7 +68,6 @@ class yzm_tag{
 	
 	/**
 	 * 分页显示
-	 * @param $string
 	 */
 	public function pages() {
 		if(!is_object($this->page)) return '';
@@ -455,7 +454,7 @@ class yzm_tag{
 		$config = isset($data['config'])&&is_array($data['config']) ? $data['config'] : array();
 		$linknum = isset($data['linknum']) ? intval($data['linknum']) : 0;
 
-		$db = D('admin')->db($linknum, $config);;
+		$db = D('admin')->db($linknum, $config);
 		$sql = $sql.$where;
 		if(isset($data['page'])){
 			yzm_base::load_sys_class('page','',0);

@@ -114,6 +114,7 @@ class code{
     private function create_font() {
         $this->create_code();
         $color = $this->font_color;
+        $font_color = null;
         if (!empty($color)) {
             $font_color = imagecolorallocate($this->img, hexdec(substr($color, 1, 2)), hexdec(substr($color, 3, 2)), hexdec(substr($color, 5, 2)));
         }

@@ -184,7 +184,13 @@ class system_manage extends common {
 	 * 用户自定义配置导出
 	 */
 	public function user_config_export() {
-		$data = D('config')->where(array('type' => 99))->select();
+		$ids = isset($_GET['ids']) ? explode(',', $_GET['ids']) : '';
+		if($ids){
+			$where = array('id'=>array('in', $ids, 'intval'));
+		}else{
+			$where = array('type' => array('eq', 99));
+		}
+		$data = D('config')->wheres($where)->select();
 		$res = array2string($data);
 		header('Content-Disposition: attachment; filename="yzm_config.cfg"');
 		echo $res;exit;

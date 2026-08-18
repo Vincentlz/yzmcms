@@ -29,7 +29,6 @@ a:hover{color:#2196f3;}
 
 .yzm-nav {position:relative;height:100%;overflow: auto;z-index: 2; background-color: #2196f3;}
 .yzm-nav ul{margin-top: 10px; line-height: 40px;}
-.yzm-nav ul li{}
 .yzm-nav ul li a { display: block; padding: 0 20px; color: #fff; text-decoration: none;transition:all 0.5s}
 .yzm-nav ul li a:hover,.yzm-nav ul li .current { background-color:#1784db}
 .yzm-search-form{padding:10px 0;text-align:center;background:rgba(0,0,0,.3);display:none}
@@ -49,7 +48,7 @@ a:hover{color:#2196f3;}
 
 /*主要内容*/
 .yzm-news-list ul li{border-bottom: 1px solid #eeeeee;padding:8px 0;margin:0 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.yzm-news-list ul li:last-child:{border-bottom:0;}
+.yzm-news-list ul li:last-child{border-bottom:0;}
 .yzm-title{background:#eee;font-weight:normal;height:40px;line-height:40px;border-top:#2196f3 2px solid;font-size:16px}
 .yzm-title a{color:#123261;}
 .yzm-news-img{overflow:hidden;margin-bottom:10px;}

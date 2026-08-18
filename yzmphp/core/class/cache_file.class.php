@@ -77,7 +77,7 @@ class cache_file{
     /**
      * 清除一条缓存
      * 
-     * @param string cache id    
+     * @param string $id 缓存id
      * @return void
      */  
     public function delete($id){
@@ -142,7 +142,7 @@ class cache_file{
     /**
      * 通过id得到缓存信息存储文件名
      * 
-     * @param  $id
+     * @param string $id 缓存id
      * @return string 缓存文件名
      */
     protected function _idtofilename($id){
@@ -154,7 +154,7 @@ class cache_file{
     /**
      * 通过filename得到缓存id
      * 
-     * @param  $id
+     * @param string $filename 缓存文件名
      * @return string 缓存id
      */
     protected function _filenametoid($filename){

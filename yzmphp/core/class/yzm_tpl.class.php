@@ -12,15 +12,6 @@ class yzm_tpl {
     private $template_tag_left = '{';     //模板左标签
     private $template_tag_right = '}';    //模板右标签
 	
-	
-    /**
-     *  构造方法
-     *  @return 
-     */	
-    public function __construct() {
-		
-    }	
-	
 
 	/**
 	 * 解析模板
@@ -60,7 +51,7 @@ class yzm_tpl {
 
 	
 	public static function yzm_tag_callback($matches) {
-		return self::yzm_tag($matches[1],$matches[2], $matches[0]);;
+		return self::yzm_tag($matches[1],$matches[2], $matches[0]);
 	}
 	
 	
@@ -95,8 +86,8 @@ class yzm_tpl {
 	/**
 	 * 转义 // 为 /
 	 *
-	 * @param $var	转义的字符
-	 * @return 转义后的字符
+	 * @param array $matches 匹配到的字符
+	 * @return string 转义后的字符
 	 */
 	public function addquote($matches) {
 		$var = '<?php echo '.$matches[1].';?>';

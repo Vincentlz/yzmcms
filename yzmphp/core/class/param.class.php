@@ -9,11 +9,16 @@
  
 class param {
 
-	private $route_config = '';  //路由配置
+	private $route_config = array();  //路由配置
 	
 	public function __construct() {
 		$route_config = array_merge(C('route_config'), config('route', array()));
 		$this->route_config = isset($route_config[HTTP_HOST]) ? $route_config[HTTP_HOST] : $route_config['default'];
+		if(isset($this->route_config['_data']) && is_array($this->route_config['_data'])) {
+			foreach($this->route_config['_data'] as $key => $value) {
+				if(!isset($_GET[$key])) $_GET[$key] = $value;
+			}
+		}
 		if(URL_MODEL){
 			if(C('set_pathinfo')) $this->set_pathinfo();
 			$this->pathinfo_url();
@@ -57,11 +62,11 @@ class param {
 	 * 处理m,a,c
 	 */
 	private function safe_deal($str) {
-		if(!is_string($str)) return '';
+		if (!is_string($str)) return '';
 		$str = trim($str);
-		if(!MAGIC_QUOTES_GPC) $str = addslashes($str);
 		if (strlen($str) > 128) application::halt('parameter length cannot exceed 128 character.');
-		return str_replace(array('/', '.'), '', $str);
+		if (!preg_match('/^[a-zA-Z0-9_]*$/', $str)) application::halt('Illegal parameter characters.');
+		return $str;
 	}
 	
 	
@@ -76,13 +81,16 @@ class param {
 			$_SERVER['PATH_INFO'] = str_ireplace(array(C('url_html_suffix'), 'index.php'), '', $_SERVER['PATH_INFO']);
 			if(C('route_mapping')) $this->mapping(set_mapping($this->route_config['m']));
 			$pathinfo = explode('/', trim($_SERVER['PATH_INFO'], '/'));		
-			$_GET['m'] = isset($pathinfo[0]) ? $pathinfo[0] : '';
-			$_GET['c'] = isset($pathinfo[1]) ? $pathinfo[1] : '';
-			$_GET['a'] = isset($pathinfo[2]) ? $pathinfo[2] : '';
+			$_GET['m'] = isset($pathinfo[0]) ? $this->safe_deal($pathinfo[0]) : '';
+			$_GET['c'] = isset($pathinfo[1]) ? $this->safe_deal($pathinfo[1]) : '';
+			$_GET['a'] = isset($pathinfo[2]) ? $this->safe_deal($pathinfo[2]) : '';
 
 			$total = count($pathinfo);
 			for($i = 3; $i<$total; $i+=2){
-				if(isset($pathinfo[$i+1])) $_GET[$pathinfo[$i]] = str_replace('{YZM_PATH}', '/', $pathinfo[$i+1]);
+				if(isset($pathinfo[$i+1])) {
+					$key = preg_replace('/[^a-zA-Z0-9_]/', '', $pathinfo[$i]);
+					$_GET[$key] = str_replace('{YZM_PATH}', '/', $pathinfo[$i+1]);
+				}
 			}
 		}
 		return true;

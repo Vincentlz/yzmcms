@@ -38,6 +38,7 @@ class adver extends common {
 			$_POST['code'] = $this->get_code($_POST);
 			$_POST['start_time'] = !empty($_POST['start_time']) ? strtotime($_POST['start_time']) : 0;
 			$_POST['end_time'] = !empty($_POST['end_time']) ? strtotime($_POST['end_time']) : 0;
+			$_POST['describe'] = htmlspecialchars($_POST['describe']);
 			if(D('adver')->insert($_POST)){
 				return_json(array('status'=>1,'message'=>L('operation_success')));
 			}else{
@@ -61,6 +62,7 @@ class adver extends common {
 			$_POST['code'] = $this->get_code($_POST);
 			$_POST['start_time'] = !empty($_POST['start_time']) ? strtotime($_POST['start_time']) : 0;
 			$_POST['end_time'] = !empty($_POST['end_time']) ? strtotime($_POST['end_time']) : 0;
+			$_POST['describe'] = htmlspecialchars($_POST['describe']);
 			if(D('adver')->update($_POST, array('id'=>$id))){
 				return_json(array('status'=>1,'message'=>L('operation_success')));
 			}else{

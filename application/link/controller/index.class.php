@@ -69,7 +69,7 @@ class index{
 				'linktype' => $site_logo ? 1 : 0,
 				'username' => isset($_POST['username']) ? str_cut($_POST['username'], 36) : '',
 				'email' => $_POST['email'],
-				'msg' => isset($_POST['msg']) ? $_POST['msg'] : '',
+				'msg' => isset($_POST['msg']) ? trim($_POST['msg']) : '',
 				'addtime' => SYS_TIME,
 			);										
 			D('link')->insert($data, true);

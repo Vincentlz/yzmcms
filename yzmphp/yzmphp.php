@@ -35,9 +35,9 @@ yzm_base::load_sys_func('global');
 //主机协议
 define('SERVER_PORT', is_ssl() ? 'https://' : 'http://');
 //当前访问的主机名
-define('HTTP_HOST', (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : ''));
+define('HTTP_HOST', get_http_host());
 //来源
-define('HTTP_REFERER', isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '');
+define('HTTP_REFERER', isset($_SERVER['HTTP_REFERER']) ? htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES) : '');
 //类文件后缀
 define('EXT', '.class.php'); 
                   

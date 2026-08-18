@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `yzmcms_adver`;
 CREATE TABLE `yzmcms_adver` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '1文字2代码3图片',
-  `title` varchar(100) NOT NULL DEFAULT '',
+  `title` varchar(150) NOT NULL DEFAULT '',
   `url` varchar(200) NOT NULL DEFAULT '',
   `text` text NULL,
   `img` varchar(200) NOT NULL DEFAULT '',

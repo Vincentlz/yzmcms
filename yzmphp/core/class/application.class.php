@@ -50,7 +50,7 @@ class application {
 	 * 加载控制器
 	 * @param string $filename
 	 * @param string $m
-	 * @return obj
+	 * @return object
 	 */
 	private function load_controller($filename = '', $m = '') {
 		if (empty($filename)) $filename = ROUTE_C;
@@ -79,11 +79,11 @@ class application {
 	 * @return    void
 	 */
 	public static function showmsg($msg, $gourl, $limittime) {
-		$gourl = empty($gourl) ? (strpos(HTTP_REFERER, SITE_URL)!==0 ? SITE_URL : htmlspecialchars(HTTP_REFERER, ENT_QUOTES, 'UTF-8')) : htmlspecialchars($gourl, ENT_QUOTES, 'UTF-8');
+		$gourl = empty($gourl) ? (strpos(HTTP_REFERER, SITE_URL)!==0 ? SITE_URL : HTTP_REFERER) : htmlspecialchars($gourl, ENT_QUOTES, 'UTF-8');
 		$stop = $gourl!='stop' ? false : true;
 		$safe_referer = SITE_URL;
 		if(filter_var(HTTP_REFERER, FILTER_VALIDATE_URL) && (strpos(HTTP_REFERER, 'http://') === 0 || strpos(HTTP_REFERER, 'https://') === 0)){
-			$safe_referer = htmlspecialchars(HTTP_REFERER, ENT_QUOTES, 'UTF-8');
+			$safe_referer = HTTP_REFERER;
 		}
 		include(YP_PATH.'core'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'message.tpl');
 	}

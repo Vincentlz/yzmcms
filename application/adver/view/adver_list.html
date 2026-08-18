@@ -34,7 +34,7 @@
 			<td><?php echo $val['title']?></td>
 			<td><?php echo $val['type']==1 ? '文字形式' : ($val['type']==2 ? 'HTML代码' : '图片形式');?></td>
 			<td><a href="<?php echo htmlspecialchars($val['url'])?>" target="_blank"><?php echo htmlspecialchars($val['url'])?></a></td>
-			<td><?php echo $val['describe'] ? htmlspecialchars($val['describe']) : '无';?></td>
+			<td><?php echo $val['describe'] ? $val['describe'] : '无';?></td>
 			<td><?php echo $val['end_time']==0 || $val['end_time']>SYS_TIME ? '<span class="label label-success radius">正常</span>' : '<span class="label label-danger radius" title="过期时间：'.date('Y-m-d H:i:s', $val['end_time']).'">已过期</span>';?></td>
 			<td><?php echo date('Y-m-d H:i:s', $val['inputtime'])?></td>
 			<td>

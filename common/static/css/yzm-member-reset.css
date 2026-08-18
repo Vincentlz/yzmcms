@@ -35,7 +35,7 @@ a:hover{color:#2f549f;text-decoration:underline;}
 .submit:hover{opacity: 0.8;color:#fff;}
 
 
-.main{margin:85px auto;padding:50px 50px 80px;overflow:auto;background:#fff;border:1px solid #eee;1px solid #eee;width:820px;border-radius:3px;box-shadow:#e1e1e1 2px 2px 10px;}
+.main{margin:85px auto;padding:50px 50px 80px;overflow:auto;background:#fff;border:1px solid #eee;width:820px;border-radius:3px;box-shadow:#e1e1e1 2px 2px 10px;}
 .main h1{border-bottom: 1px dashed #ddd;color:#494949;padding:10px 0;font-size: 25px;margin-bottom:30px;}
 .main_left{width:600px;float:left;border-right:1px solid #ddd;}
 .reset_type{font-size:16px;height:40px;line-height:40px;margin:20px 20px;background:#fffefc;border:1px solid #eee;width:520px;padding:20px 10px;}

@@ -38,7 +38,7 @@ class index extends common{
 			if(get_config('member_yzm')) $this->_check_code();
 			$member = D('member');
 			$username = isset($_POST['username']) ? trim($_POST['username']) : return_json(array('status'=>0, 'message'=>L('lose_parameters')));
-			$password = password($_POST['password']);
+			$password = isset($_POST['password']) ? password(trim($_POST['password'])) : '';
 
 			//电子邮箱和用户名两种登录方式
 			$where = is_email($username) ? array('email'=>$username) : array('username'=>$username);

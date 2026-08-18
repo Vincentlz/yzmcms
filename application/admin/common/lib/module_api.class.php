@@ -125,7 +125,7 @@ class module_api {
 	 * @param string $sql sql语句
 	 */
 	private function sql_execute($sql) {
-	    $sqls = explode(";", trim($sql));;
+	    $sqls = explode(";", trim($sql));
 		$sqls = array_filter($sqls);
 		$admin = D('admin');
 		foreach ($sqls as $sql){

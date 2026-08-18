@@ -91,15 +91,15 @@ class index{
 			}
 		}
 
-		if(isset($data['email']) && !is_email($data['email'])){
+		if(isset($data['email']) && $data['email'] && !is_email($data['email'])){
 			return_message('邮箱格式不正确！', 0);
 		}
 
-		if(isset($data['phone']) && !is_mobile($data['phone'])){
+		if(isset($data['phone']) && $data['phone'] && !is_mobile($data['phone'])){
 			return_message('手机号格式不正确！', 0);
 		}
 
-		if(isset($data['qq']) && strlen($data['qq'])>11){
+		if(isset($data['qq']) && $data['qq'] && strlen($data['qq'])>11){
 			return_message('QQ号码长度不正确！', 0);
 		}
 

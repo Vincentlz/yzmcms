@@ -23,7 +23,11 @@ class module extends common {
 		$dirs = glob(APP_PATH.'*', GLOB_ONLYDIR);
 
 		foreach ($dirs as $d) {
-			$dirs_arr[] = basename($d);
+			$dirname = basename($d);
+			if (preg_match('/^install_[A-Za-z0-9]{10}$/', $dirname, $matches)) {
+			    $dirname = 'install';
+			}
+			$dirs_arr[] = $dirname;
 		}
 		
 		$total = count($dirs_arr);

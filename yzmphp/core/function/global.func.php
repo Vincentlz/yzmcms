@@ -46,10 +46,10 @@ function https_request($url, $data = '', $array = true, $timeout = 2000, $header
 
 /**
  * 字符截取
- * @param $string 要截取的字符串
- * @param $length 截取长度
- * @param $dot	  截取之后用什么表示
- * @param $code	  编码格式，支持UTF8/GBK
+ * @param  string $string 要截取的字符串
+ * @param  int    $length 截取长度
+ * @param  string  $dot	  截取之后用什么表示
+ * @param  string  $code  编码格式，支持UTF8/GBK
  * @return string
  */
 function str_cut($string, $length, $dot = '...', $code = 'utf-8') {
@@ -108,41 +108,119 @@ function str_cut($string, $length, $dot = '...', $code = 'utf-8') {
 
 /**
  * xss过滤函数
- *
- * @param $string
+ * @param  string  $string 要过滤的字符串
  * @return string
  */
-function remove_xss($string) { 
+function remove_xss($string) {
+    if (!is_string($string) || $string === '') {
+        return $string;
+    }
+
     $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $string);
 
-    $parm1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base');
+    $allowed_tags = array(
+        'a', 'b', 'strong', 'i', 'em', 'u', 'p', 'br', 'div', 'span', 'ul', 'ol', 'li', 'pre',
+        'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'img',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6'
+    );
 
-    $parm2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload', 'onpointerout', 'onfullscreenchange', 'onfullscreenerror', 'onhashchange', 'onanimationend', 'onanimationiteration', 'onanimationstart', 'onmessage', 'onloadstart', 'ondurationchange', 'onloadedmetadata', 'onloadeddata', 'onprogress', 'oncanplay', 'oncanplaythrough', 'onended', 'oninput', 'oninvalid', 'onoffline', 'ononline', 'onopen', 'onpagehide', 'onpageshow', 'onpause', 'onplay', 'onplaying', 'onpopstate', 'onratechange', 'onsearch', 'onseeked', 'onseeking', 'onshow', 'onstalled', 'onstorage', 'onsuspend', 'ontimeupdate', 'ontoggle', 'ontouchcancel', 'ontouchend', 'ontouchmove', 'ontouchstart', 'ontransitionend', 'onvolumechange', 'onwaiting', 'onwheel', 'onbegin');
+    $allowed_attributes = array(
+        '*' => array('title', 'alt'),
+        'a' => array('href', 'title', 'target', 'rel'),
+        'img' => array('src', 'alt', 'title', 'width', 'height')
+    );
 
-    $parm = array_merge($parm1, $parm2); 
+    $string = preg_replace_callback('/<\s*(\/?)\s*([a-zA-Z0-9]+)([^>]*)>/s', function($matches) use ($allowed_tags, $allowed_attributes) {
+        $closing = $matches[1];
+        $tag = strtolower($matches[2]);
+        $attr_text = $matches[3];
 
-	for ($i = 0; $i < sizeof($parm); $i++) { 
-		$pattern = '/'; 
-		for ($j = 0; $j < strlen($parm[$i]); $j++) { 
-			if ($j > 0) { 
-				$pattern .= '('; 
-				$pattern .= '(&#[x|X]0([9][a][b]);?)?'; 
-				$pattern .= '|(&#0([9][10][13]);?)?'; 
-				$pattern .= ')?'; 
-			}
-			$pattern .= $parm[$i][$j]; 
-		}
-		$pattern .= '/i';
-		$string = preg_replace($pattern, 'xxx', $string); 
-	}
-	return $string;
-}	
+        if (!in_array($tag, $allowed_tags)) {
+            return '';
+        }
+
+        if ($closing) {
+            return '</' . $tag . '>';
+        }
+
+        $allowed = isset($allowed_attributes[$tag]) ? array_merge($allowed_attributes['*'], $allowed_attributes[$tag]) : $allowed_attributes['*'];
+        $attr_text = trim($attr_text);
+        $safe_attrs = '';
+        $attr_values = array();
+
+        // 修复属性名包含引号绕过问题
+        if (preg_match_all('/([^\s=\/>]+)(\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\"\'>\s]+)))?/s', $attr_text, $attr_matches, PREG_SET_ORDER)) {
+            foreach ($attr_matches as $attr_match) {
+                $name = $attr_match[1];
+                $decoded_name = html_entity_decode($name, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                $decoded_name = rawurldecode($decoded_name);
+                // 清理属性名内控制字符
+                $normalized_name = strtolower(preg_replace('/[\s\x00-\x1F\x7F]+/u', '', $decoded_name));
+
+                // 过滤所有on开头事件属性
+                if (strpos($normalized_name, 'on') === 0) {
+                    continue;
+                }
+
+                if (!in_array($normalized_name, $allowed)) {
+                    continue;
+                }
+
+                $value = '';
+                if (isset($attr_match[3]) && $attr_match[3] !== '') {
+                    $value = $attr_match[3];
+                } elseif (isset($attr_match[4]) && $attr_match[4] !== '') {
+                    $value = $attr_match[4];
+                } elseif (isset($attr_match[5]) && $attr_match[5] !== '') {
+                    $value = $attr_match[5];
+                }
+
+				// href src协议校验，解码实体和百分号编码后检测
+                if ($normalized_name === 'href' || $normalized_name === 'src') {
+                    $value = trim($value);
+                    $decoded = html_entity_decode($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    $decoded = rawurldecode($decoded);
+                    $normalized_value = strtolower(preg_replace('/[\s\x00-\x1F\x7F]+/u', '', $decoded));
+
+                    if (preg_match('/^(javascript|vbscript|file|about|view-source):/i', $normalized_value)) {
+                        continue;
+                    }
+
+                    if (strpos($normalized_value, 'data:') === 0) {
+                        if (!preg_match('/^data:image\/(png|jpe?g|gif|webp|bmp)(;|,)/i', $normalized_value)) {
+							continue;
+						}
+					}
+                }
+
+                $attr_values[$normalized_name] = $value;
+            }
+        }
+
+        if ($tag === 'a' && isset($attr_values['target']) && strtolower(trim($attr_values['target'])) === '_blank') {
+            $rel_values = isset($attr_values['rel']) ? preg_split('/\s+/', trim($attr_values['rel']), -1, PREG_SPLIT_NO_EMPTY) : array();
+            $lower_rels = array_map('strtolower', $rel_values);
+            if (!in_array('noopener', $lower_rels, true)) {
+                $rel_values[] = 'noopener';
+            }
+            $attr_values['rel'] = trim(implode(' ', array_unique($rel_values)));
+        }
+
+        $safe_attrs = '';
+        foreach ($attr_values as $name => $value) {
+            $safe_attrs .= ' ' . $name . '="' . htmlspecialchars($value, ENT_QUOTES | ENT_HTML5) . '"';
+        }
+
+        return '<' . $tag . $safe_attrs . '>';
+    }, $string);
+
+    return $string;
+}
 
 
 /**
  * 安全过滤函数
- *
- * @param $string
+ * @param  string  $string 要过滤的字符串
  * @return string
  */
 function safe_replace($string) {
@@ -182,6 +260,7 @@ function get_url() {
  * @return string
  */
 function getip(){
+	$ip = '';
 	if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
 		$ip = getenv('HTTP_CLIENT_IP');
 	} elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
@@ -197,8 +276,8 @@ function getip(){
 
 /**
  * 获取请求地区
- * @param $ip	IP地址
- * @param $is_array 是否返回数组形式
+ * @param string $ip IP地址
+ * @param bool $is_array 是否返回数组形式
  * @return string|array
  */
 function get_address($ip, $is_array = false){
@@ -206,7 +285,7 @@ function get_address($ip, $is_array = false){
 	$content = @file_get_contents('http://api.yzmcms.com/api/ip/?ip='.$ip);
 	$arr = json_decode($content, true);
 	if(is_array($arr) && !isset($arr['error'])){
-		return $is_array ? $arr : $arr['country'].'-'.$arr['province'].'-'.$arr['city'];
+		return $is_array ? $arr : ($arr['country'] .'-'. $arr['province'] . (!empty($arr['city']) ? '-' . $arr['city'] : ''));
 	}else{
 		return $is_array&&is_array($arr) ? $arr : '未知';
 	}
@@ -215,8 +294,8 @@ function get_address($ip, $is_array = false){
 
 /**
  * 检查IP是否匹配
- * @param  $ip_vague 要检查的IP或IP段，IP段(*)表示
- * @param  $ip       被检查IP
+ * @param  string  $ip_vague 要检查的IP或IP段，IP段(*)表示
+ * @param  string  $ip       被检查IP，默认当前请求IP
  * @return bool
  */
 function check_ip_matching($ip_vague, $ip = ''){
@@ -235,12 +314,11 @@ function check_ip_matching($ip_vague, $ip = ''){
 }
 
 
-
 /**
 * 产生随机字符串
-* @param    int        $length  输出长度
-* @param    string     $chars   可选的 ，默认为 0123456789
-* @return   string     字符串
+* @param  int  $length  输出长度
+* @param  string  $chars   可选的 ，默认为 0123456789
+* @return string 字符串
 */
 function random($length, $chars = '0123456789') {
 	$hash = '';
@@ -264,7 +342,7 @@ function create_randomstr($lenth = 6) {
 
 /**
 * 创建订单号
-* @return   string     字符串
+* @return string 字符串
 */
 function create_tradenum(){
 	return date('YmdHis').random(4);
@@ -273,7 +351,7 @@ function create_tradenum(){
 
 /**
  * 返回经addslashes处理过的字符串或数组
- * @param $string 需要处理的字符串或数组
+ * @param  string  $string 需要处理的字符串或数组
  * @return mixed
  */
 function new_addslashes($string){
@@ -285,7 +363,7 @@ function new_addslashes($string){
 
 /**
  * 返回经stripslashes处理过的字符串或数组
- * @param $string 需要处理的字符串或数组
+ * @param  string  $string 需要处理的字符串或数组
  * @return mixed
  */
 function new_stripslashes($string) {
@@ -297,8 +375,8 @@ function new_stripslashes($string) {
 
 /**
  * 返回经htmlspecialchars处理过的字符串或数组
- * @param $string 需要处理的字符串或数组
- * @param $filter 需要排除的字段，格式为数组
+ * @param  string  $string 需要处理的字符串或数组
+ * @param  array   $filter 需要排除的字段，格式为数组	
  * @return mixed
  */
 function new_html_special_chars($string, $filter = array()) {
@@ -329,8 +407,7 @@ function new_json_encode($array, $options = 0, $depth = 0){
 
 /**
  * 转义 javascript 代码标记
- *
- * @param $str
+ * @param  string  $str 要处理的字符串或数组
  * @return string
  */
 function trim_script($str) {
@@ -350,9 +427,8 @@ function trim_script($str) {
 
 /**
 * 将字符串转换为数组
-*
-* @param	string	$data	字符串
-* @return	array	返回数组格式，如果，data为空，则返回空数组
+* @param  string  $data 字符串
+* @return array 返回数组格式，如果，data为空，则返回空数组
 */
 function string2array($data) {
 	$data = is_string($data) ? trim($data) : '';
@@ -366,10 +442,9 @@ function string2array($data) {
 
 /**
 * 将数组转换为字符串
-*
-* @param	array	$data		数组
-* @param	bool	$isformdata	如果为0，则不使用new_stripslashes处理，可选参数，默认为1
-* @return	string	返回字符串，如果，data为空，则返回空
+* @param  array  $data 数组
+* @param  bool  $isformdata 如果使用new_stripslashes处理，可选参数，默认为1
+* @return string 返回字符串，如果，data为空，则返回空
 */
 function array2string($data, $isformdata = 1) {
 	if(empty($data)) return '';
@@ -385,9 +460,9 @@ function array2string($data, $isformdata = 1) {
 
 /**
  * 兼容低版本的array_column
- * @param  $array      多维数组
- * @param  $column_key 需要返回值的列
- * @param  $index_key  可选。作为返回数组的索引/键的列。
+ * @param  array   $array      多维数组
+ * @param  string  $column_key 需要返回值的列
+ * @param  string  $index_key  可选。作为返回数组的索引/键的列，默认为null
  * @return array       返回一个数组，数组的值为输入数组中某个单一列的值。
  */
 function yzm_array_column($array, $column_key, $index_key = null){
@@ -411,10 +486,9 @@ function yzm_array_column($array, $column_key, $index_key = null){
 }
 
 
-
 /**
  * 判断email格式是否正确
- * @param $email
+ * @param  string  $email 邮箱地址
  * @return bool
  */
 function is_email($email) {
@@ -425,7 +499,7 @@ function is_email($email) {
 
 /**
  * 判断手机格式是否正确
- * @param $mobile
+ * @param  string  $mobile 手机号地址
  * @return bool
  */
 function is_mobile($mobile) {
@@ -435,7 +509,6 @@ function is_mobile($mobile) {
 
 /**
  * 检测输入中是否含有错误字符
- *
  * @param string $string 要检查的字符串名称
  * @return bool
  */
@@ -452,7 +525,6 @@ function is_badword($string) {
 
 /**
  * 检查用户名是否符合规定
- *
  * @param string $username 要检查的用户名
  * @return 	boolean
  */
@@ -480,7 +552,6 @@ function is_username($username) {
 
 /**
  * 检查密码长度是否符合规定
- *
  * @param STRING $password
  * @return 	boolean
  */
@@ -493,8 +564,7 @@ function is_password($password) {
 
 /**
  * 取得文件扩展
- *
- * @param $filename 文件名
+ * @param  string  $filename 文件名
  * @return string
  */
 function fileext($filename) {
@@ -504,6 +574,7 @@ function fileext($filename) {
 
 /**
  * 是否为图片格式
+ * @param  string  $ext 文件扩展名
  * @return bool
  */
 function is_img($ext) {
@@ -526,7 +597,7 @@ function is_ie() {
 
 /**
  * 判断字符串是否为utf8编码，英文和半角字符返回ture
- * @param $string
+ * @param  string  $string 要检查的字符串
  * @return bool
  */
 function is_utf8($string) {
@@ -545,7 +616,6 @@ function is_utf8($string) {
 
 /**
  * 获取文件的真实MIME类型
- * 
  * @param string $file_path 文件路径
  * @param string $extension 文件后缀，finfo和mime_content_type未开启时返回准确类型
  * @return string|bool
@@ -591,8 +661,8 @@ function get_file_mime_type($file_path, $extension = null) {
 
 /**
  * 文件下载
- * @param $filepath 文件路径
- * @param $filename 文件名称
+ * @param  string  $filepath 文件路径
+ * @param  string  $filename 文件名称，默认为空时使用文件名作为下载名
  * @return null
  */
 function file_down($filepath, $filename = '') {
@@ -632,10 +702,9 @@ function file_down($filepath, $filename = '') {
 }
 
 
-
 /**
 * 传入日期格式或时间戳格式时间，返回与当前时间的差距，如1分钟前，2小时前，5月前，3年前等
-* @param $date 分两种日期格式"2015-09-12 14:16:12"或时间戳格式"1386743303"
+* @param string $date 分两种日期格式"2015-09-12 14:16:12"或时间戳格式"1386743303"
 * @param int $type 1为时间戳格式，$type = 2为date时间格式
 * @return string
 */
@@ -709,7 +778,7 @@ function array_iconv($data, $input = 'gbk', $output = 'utf-8') {
 
 /**
 * 字符串加密/解密函数
-* @param	string	$txt		字符串
+* @param	string	$string		字符串
 * @param	string	$operation	ENCODE为加密，DECODE为解密，可选参数，默认为ENCODE，
 * @param	string	$key		密钥：数字、字母、下划线
 * @param	string	$expiry		过期时间
@@ -784,13 +853,12 @@ function match_img($content){
 function grab_image($content, $targeturl = ''){
 	preg_match_all("/(src)=([\"|']?)([^ \"'>]+\.(gif|jpg|jpeg|bmp|png|webp))\\2/i", $content, $img_array);
 	$img_array = isset($img_array[3]) ? array_unique($img_array[3]) : array();
+	if(!$img_array) return $content;
 	
-	if($img_array) {
-		$path =  C('upload_file').'/'.date('Ym/d');
-		$urlpath = SITE_PATH.$path;
-		$imgpath =  YZMPHP_PATH.$path;
-		if(!is_dir($imgpath)) @mkdir($imgpath, 0777, true);
-	}
+	$path =  C('upload_file').'/'.date('Ym/d');
+	$urlpath = SITE_PATH.$path;
+	$imgpath =  YZMPHP_PATH.$path;
+	if(!is_dir($imgpath)) @mkdir($imgpath, 0777, true);
 	
 	foreach($img_array as $value){
 		$val = $value;		
@@ -827,11 +895,11 @@ function grab_image($content, $targeturl = ''){
 
 /**
  * 生成缩略图函数
- * @param  $imgurl 图片路径
- * @param  $width  缩略图宽度
- * @param  $height 缩略图高度
- * @param  $autocut 是否自动裁剪 默认不裁剪，当高度或宽度有一个数值为0时，自动关闭
- * @param  $smallpic 无图片是默认图片路径
+ * @param  string  $imgurl 图片路径
+ * @param  int  $width  缩略图宽度
+ * @param  int  $height 缩略图高度
+ * @param  int  $autocut 是否自动裁剪 默认不裁剪，当高度或宽度有一个数值为0时，自动关闭
+ * @param  string  $smallpic 无图片是默认图片路径
  * @return string
  */
 function thumb($imgurl, $width = 300, $height = 200 ,$autocut = 0, $smallpic = 'nopic.jpg') {
@@ -861,8 +929,8 @@ function thumb($imgurl, $width = 300, $height = 200 ,$autocut = 0, $smallpic = '
 
 /**
  * 水印添加
- * @param $source 原图片路径
- * @param $target 生成水印图片途径，默认为空，覆盖原图
+ * @param  string  $source 原图片路径
+ * @param  string  $target 生成水印图片途径，默认为空，覆盖原图
  * @return string
  */
 function watermark($source, $target = '') {
@@ -911,7 +979,7 @@ function new_session_start(){
  * @param string $name     变量名
  * @param string $value    变量值
  * @param int $time    过期时间
- * @param boolean $httponly  
+ * @param boolean $httponly
  */
 function set_cookie($name, $value = '', $time = 0, $httponly = false) {
 	$time = $time ? SYS_TIME + $time : (C('cookie_ttl') ? SYS_TIME + C('cookie_ttl') : 0);
@@ -1056,7 +1124,7 @@ function M($classname, $m = ''){
 
 /**
  * 用于实例化一个数据表对象  如：D('admin');
- * @param $tabname	 表名称
+ * @param  string  $tabname	 表名称
  * @return object
  */	
 function D($tabname){
@@ -1067,7 +1135,6 @@ function D($tabname){
 	$_tables[$tabname] = $object;
 	return $object;
 }
-
 
 
 /**
@@ -1159,12 +1226,11 @@ function C($key = '', $default = '') {
 }
 
 
-
 /**
  * 获取和设置语言定义
- * @param	string		$language	语言变量
- * @param	string		$module     模块名
- * @return	string		语言字符
+ * @param string $language 语言变量
+ * @param string $module     模块名
+ * @return string 语言字符
  */
 function L($language = '', $module = ''){
 	static $_lang = array();
@@ -1223,9 +1289,9 @@ function set_module_theme($theme = 'default'){
 
 /**
  * 写入缓存
- * @param $name 缓存名称
- * @param $data 缓存数据
- * @param $timeout 过期时间
+ * @param  string  $name 缓存名称
+ * @param  mixed  $data 缓存数据
+ * @param  int  $timeout 过期时间
  * @return    int
  */
 function setcache($name, $data, $timeout=0) {
@@ -1238,7 +1304,7 @@ function setcache($name, $data, $timeout=0) {
 /**
  * 读取缓存
  * @param string $name 缓存名称
- * @return    string
+ * @return mixed
  */
 function getcache($name) {
 	yzm_base::load_sys_class('cache_factory','',0);
@@ -1250,8 +1316,8 @@ function getcache($name) {
 /**
  * 删除缓存
  * @param string $name 缓存名称
- * @param $flush 是否清空所有缓存
- * @return    bool
+ * @param bool $flush 是否清空所有缓存
+ * @return bool
  */
 function delcache($name, $flush = false) {
 	yzm_base::load_sys_class('cache_factory','',0);
@@ -1321,10 +1387,10 @@ function dispatch($job, $params = array(), $queue = ''){
 /**
  *  提示信息页面跳转
  *
- * @param     string  $msg      消息提示信息
- * @param     string  $gourl    跳转地址,stop为停止
- * @param     int     $limittime  限制时间
- * @return    void
+ * @param string $msg      消息提示信息
+ * @param string $gourl    跳转地址,stop为停止
+ * @param int $limittime  限制时间
+ * @return void
  */
 function showmsg($msg, $gourl = '', $limittime = 3){
 	application::showmsg($msg, $gourl, $limittime);
@@ -1338,9 +1404,9 @@ function showmsg($msg, $gourl = '', $limittime = 3){
 
 /**
  * 根据请求方式自动返回信息
- * @param   $message 
- * @param   $status  
- * @param   $url  
+ * @param  string  $message 
+ * @param  int  $status  
+ * @param  string  $url
  * @return  void           
  */
 function return_message($message, $status = 1, $url = ''){
@@ -1417,7 +1483,7 @@ function send_http_status($code){
 
 /**
  * 生成验证key
- * @param $prefix   前缀
+ * @param  string  $prefix   前缀
  * @return string
  */
 function make_auth_key($prefix) {
@@ -1442,10 +1508,10 @@ function return_json($arr = array(), $show_debug = false){
 
 /**
  * 记录日志
- * @param $message 日志信息
- * @param $filename 文件名称
- * @param $ext 文件后缀
- * @param $path 日志路径
+ * @param  string  $message 日志信息
+ * @param  string  $filename 文件名称
+ * @param  string  $ext 文件后缀
+ * @param  string  $path 日志路径
  * @return bool
  */
 function write_log($message, $filename = '', $ext = '.log', $path = '') {
@@ -1462,8 +1528,8 @@ function write_log($message, $filename = '', $ext = '.log', $path = '') {
 
 /**
  * 记录错误日志
- * @param $err_arr 错误信息
- * @param $path 日志路径
+ * @param  array  $err_arr 错误信息
+ * @param  string  $path 日志路径
  * @return bool
  */
 function write_error_log($err_arr, $path = '') {
@@ -1556,6 +1622,19 @@ function input($key = '', $default = '', $function = ''){
 
 
 /**
+ * 获取HTTP_HOST
+ * @return string
+ */
+function get_http_host(){
+	$http_post = isset($_SERVER['HTTP_HOST']) ? htmlspecialchars($_SERVER['HTTP_HOST'], ENT_QUOTES) : '';
+	$server_port = isset($_SERVER['SERVER_PORT']) ? intval($_SERVER['SERVER_PORT']) : 80;
+	if(!$http_post) return $http_post;
+	if(!strstr($http_post, ':') && !in_array($server_port, array(80, 443))) $http_post .= ':'.$server_port;
+	return $http_post;
+}
+
+
+/**
  * 判断是否SSL协议
  * @return bool
  */
@@ -1613,7 +1692,6 @@ function is_ajax(){
 
 /**
  * 安全关闭cURL句柄
- *
  * @param mixed $ch cURL句柄
  * @return null
  */
@@ -1629,7 +1707,6 @@ function safe_curl_close($ch) {
 
 /**
  * 安全关闭文件信息句柄
- *
  * @param mixed $finfo 文件信息句柄
  * @return null
  */

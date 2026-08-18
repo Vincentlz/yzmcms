@@ -29,7 +29,6 @@ a:hover{color:#2196f3;}
 
 .yzm-nav {position:relative;height:100%;overflow: auto;z-index: 2; background-color: #2196f3;}
 .yzm-nav ul{margin-top: 10px; line-height: 40px;}
-.yzm-nav ul li{}
 .yzm-nav ul li a { display: block; padding: 0 20px; color: #fff; text-decoration: none;transition:all 0.5s}
 .yzm-nav ul li a:hover,.yzm-nav ul li .current { background-color:#1784db}
 .yzm-search-form{padding:10px 0;text-align:center;background:rgba(0,0,0,.3);display:none}
@@ -42,7 +41,7 @@ a:hover{color:#2196f3;}
 .yzm-news-list ul li .date{float:right;color:#666;font-size:12px;margin-left:7px;}
 .yzm-news-list ul li .yzm-label{font-size:12px;color:#8d1adc}
 .yzm-news-list ul li .yzm-label2{font-size:12px;color:#c00}
-.yzm-news-list ul li:last-child:{border-bottom:0;}
+.yzm-news-list ul li:last-child{border-bottom:0;}
 .yzm-flag{font-style: normal;font-size: 12px;background:#f60;color:#fff;padding: 2px 3px;font-weight:normal;}
 .yzm-title{background:#eee;font-weight:normal;height:35px;line-height:35px;border-top:#2196f3 2px solid;}
 .yzm-title a{color:#123261;}

@@ -925,7 +925,7 @@ function field_order($field){
  */
 function handle_upload_types($type = 1){
     $arr = explode('|', ($type==1 ? get_config('upload_image_types') : get_config('upload_types')));
-    $allow = array('png', 'gif', 'jpg', 'jpeg', 'webp', 'bmp', 'ico', 'zip', 'rar', '7z', 'gz', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'csv', 'mp3', 'mp4', 'avi', 'wmv', 'rmvb', 'flv', 'wma', 'wav', 'amr', 'ogg', 'ogv', 'webm', 'swf', 'mkv', 'torrent');
+    $allow = array('png', 'gif', 'jpg', 'jpeg', 'webp', 'bmp', 'ico', 'heic', 'heif', 'zip', 'rar', '7z', 'gz', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'txt', 'csv', 'mp3', 'mp4', 'avi', 'wmv', 'rmvb', 'flv', 'wma', 'wav', 'amr', 'ogg', 'ogv', 'webm', 'mkv', 'torrent');
     foreach($arr as $key => $val){
         if(!in_array($val, $allow)) unset($arr[$key]);
     }

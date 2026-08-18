@@ -19,8 +19,8 @@
             <li class="current">完成安装</li>
       </ul>
     </div>
-    <div class="install" id="log">
-      <ul id="loginner">
+    <div class="install" id="install">
+      <ul id="install_log">
       </ul>
     </div>
     <div class="bottom tac"> <a href="javascript:;" class="btn_old"><img src="./images/loading.gif" class="yzm-loading" align="absmiddle" />&nbsp;正在安装...</a> </div>
@@ -42,10 +42,10 @@
                     $('#dosubmit').removeAttr("disabled");
                     $('#dosubmit').removeClass("nonext");
                     setTimeout('gonext()', 2000);
-                    
                 }else{
 					if(msg.status){
-						$('#loginner').append(msg.msg);
+						$('#install_log').append(msg.msg);
+						$('#install').scrollTop($('#install')[0].scrollHeight);
 						reloads(msg.n);
 					}else{
 						layer.alert(msg.msg, {title:'安装失败'});

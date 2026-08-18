@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `yzmcms_banner`;
 CREATE TABLE `yzmcms_banner` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(100) NOT NULL DEFAULT '',
+  `title` varchar(200) NOT NULL DEFAULT '',
   `image` varchar(150) NOT NULL DEFAULT '',
   `url` varchar(150) NOT NULL DEFAULT '',
   `introduce` varchar(255) NOT NULL DEFAULT '' COMMENT '简介',

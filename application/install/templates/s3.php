@@ -59,7 +59,7 @@
                             </tr>
                             <tr>
                                 <td class="tar">数据库名：</td>
-                                <td><input type="text" name="dbname" id="dbname" value="yzmcms" class="input"></td>
+                                <td><input type="text" name="dbname" id="dbname" value="<?php echo $dbname; ?>" class="input"></td>
                                 <td><div id="J_install_tip_dbname"></div></td>
                             </tr>
                             <tr>
@@ -142,7 +142,7 @@
                 function TestDbPwd(){
 					var db_result = {status:0, msg:"未知错误"};
 
-                    var dbType = $("#dbtype").val();;
+                    var dbType = $("#dbtype").val();
                     var dbHost = $('#dbhost').val();
                     var dbUser = $('#dbuser').val();
                     var dbPw = $('#dbpw').val();
@@ -164,7 +164,6 @@
                 }
 
                 function dosubmit(obj) {
-                    var reg = /^http(.+)\/$/;
                     if(obj.dbhost.value == ''){
                         layer.msg('数据库服务器不能为空!', {icon:2});
                         return false;
@@ -181,10 +180,20 @@
                         layer.msg('数据库名不能为空!', {icon:2});
                         return false;
                     }
+                    if(obj.dbprefix.value == ''){
+                        layer.msg('数据库前缀不能为空!', {icon:2});
+                        return false;
+                    }
+                    var reg = /^[a-zA-Z]{1}([a-zA-Z0-9]|[_]){0,29}$/;
+                    if(!reg.test(obj.dbprefix.value)){
+                        layer.msg('数据库前缀必须为英文字母开头、可以包含数字或下划线!', {icon:2});
+                        return false;
+                    }
                     if(obj.sitename.value == ''){
                         layer.msg('网站名称不能为空!', {icon:2});
                         return false;
                     }
+                    var reg = /^http(.+)\/$/;
                     if(!reg.test(obj.siteurl.value)){
                         layer.msg('网站域名格式不正确!', {icon:2});
                         return false;

@@ -144,10 +144,10 @@ class category extends common {
 
 		if(isset($_POST['dosubmit'])) { 
 
-			if($_POST['domain']) $this->set_domain();
+			if(isset($_POST['domain']) && $_POST['domain']) $this->set_domain();
 
-			$_POST['catname'] = trim($_POST['catname']);
-			$_POST['catdir'] = trim($_POST['catdir'], ' /');
+			$_POST['catname'] = isset($_POST['catname']) ? trim($_POST['catname']) : '';
+			$_POST['catdir'] = isset($_POST['catdir']) ? trim($_POST['catdir'], ' /') : '';
 
 			if($type != 2){   //非外部链接
 				$res = $this->db->where(array('siteid'=>self::$siteid, 'catdir'=>$_POST['catdir']))->find();
@@ -187,7 +187,7 @@ class category extends common {
 			
 			$this->db->update(array('arrchildid' => $catid, 'pclink' => $_POST['pclink']), array('catid' => $catid));  //更新本类的子分类及更新URL
 			if($_POST['parentid']!='0') $this->repairs($_POST['arrparentid']);
-			if($_POST['domain']) $this->set_domain();
+			if(isset($_POST['domain']) && $_POST['domain']) $this->set_domain();
 			$this->delcache();
 			return_json(array('status'=>1,'message'=>L('operation_success')));
 		}else{
@@ -256,7 +256,7 @@ class category extends common {
 				}
 				//根据系统设置生成URL
 				$domain = isset($data['domain']) ? $data['domain'] : '';
-				$_POST['pclink'] = $this->get_category_url($domain, $_POST['catdir']);;					
+				$_POST['pclink'] = $this->get_category_url($domain, $_POST['catdir']);				
 
 				$this->db->update(array('arrchildid' => $catid, 'pclink' => $_POST['pclink']), array('catid' => $catid));  //更新本类的子分类及更新URL
 				if($_POST['parentid']!='0') $this->repairs($_POST['arrparentid']);
@@ -286,11 +286,11 @@ class category extends common {
 	public function edit() {				
 
 		if(isset($_POST['dosubmit'])) {
-			if($_POST['domain']) $this->set_domain();
+			if(isset($_POST['domain']) && $_POST['domain']) $this->set_domain();
 
 			$catid = isset($_POST['catid']) ? strval(intval($_POST['catid'])) : 0;
-			$_POST['catname'] = trim($_POST['catname']);
-			$_POST['catdir'] = trim($_POST['catdir'], ' /');
+			$_POST['catname'] = isset($_POST['catname']) ? trim($_POST['catname']) : '';
+			$_POST['catdir'] = isset($_POST['catdir']) ? trim($_POST['catdir'], ' /') : '';
 			
 			if($_POST['parentid']=='0') {
 				$_POST['arrparentid'] = '0';
@@ -316,7 +316,7 @@ class category extends common {
 
 			if($this->db->update($_POST, array('catid' => $catid), true)){		
 				if($_POST['arrparentid']!=$_POST['cpath']) $this->repairs($_POST['arrparentid'], $_POST['cpath']);
-				if($_POST['domain']) $this->set_domain();
+				if(isset($_POST['domain']) && $_POST['domain']) $this->set_domain();
 				$this->delcache();
 				return_json(array('status'=>1,'message'=>L('operation_success')));
 			}else{

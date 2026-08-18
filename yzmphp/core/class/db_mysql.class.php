@@ -154,7 +154,7 @@ class db_mysql{
 
 	/**
 	 * 组装where条件，将数组转换为SQL语句
-	 * @param array $where  要生成的数组,参数可以为数组也可以为字符串，建议数组。
+	 * @param array $arr  要生成的数组,参数可以为数组也可以为字符串，建议数组。
 	 * return object
 	 */
 	public function where($arr = ''){
@@ -191,7 +191,7 @@ class db_mysql{
 	 * 组装where条件，where方法升级版
 	 * 格式：$where['字段']  = array('表达式','字段条件','可选参数(函数名)');
 	 * 简写：$where['字段']  = array('yzmcms') 等价 $where['字段']  = array('eq', 'yzmcms')
-	 * @param array $where  要生成的数组,参数可以为数组也可以为字符串，建议数组。
+	 * @param array $arr  要生成的数组,参数可以为数组也可以为字符串，建议数组。
 	 * return object
 	 */
 	public function wheres($arr = ''){
@@ -289,7 +289,7 @@ class db_mysql{
 
 	/**
 	 * 批量执行添加记录操作
-	 * @param $data         要增加的数据，参数为二维数组
+	 * @param $datas        要增加的数据，参数为二维数组
 	 * @param $filter       如果为真值[1为真] 则开启实体转义
 	 * @param $replace 		是否为replace
 	 * @return int|boolean  成功：返回首个自动增长的ID，失败：false
@@ -422,9 +422,7 @@ class db_mysql{
 		}
 		
 		if(empty($update_str)) return false;
-		
 		$sql = 'INSERT INTO '. $this->get_tablename() .' ('. implode(', ', $fields) .') VALUES ('. implode(', ', $values) .') ON DUPLICATE KEY UPDATE '. $update_str;
-		
 		$this->execute($sql);
 		return mysql_affected_rows();
 	}
@@ -528,7 +526,8 @@ class db_mysql{
 	public function query($sql = '', $fetch_all = true){
 		$sql = str_replace('yzmcms_', $this->config['db_prefix'], $sql);
 		if(preg_match("/^(?:UPDATE|DELETE|TRUNCATE|ALTER|DROP|FLUSH|INSERT|REPLACE|SET|CREATE)\\s+/i", $sql)){
-			return $this->execute($sql);	 
+			$this->execute($sql);
+			return mysql_affected_rows();
 		} 
 		return $fetch_all ? $this->fetch_all($this->execute($sql)) : $this->fetch_array($this->execute($sql));
 	}
@@ -536,7 +535,8 @@ class db_mysql{
 
 	/**
 	 * 返回一维数组，与query方法结合使用
-	 * @param  resource
+	 * @param  resource $query
+	 * @param  int $result_type 结果类型，默认MYSQL_ASSOC
 	 * @return array
 	 */		
     public function fetch_array($query, $result_type = MYSQL_ASSOC) {
@@ -547,7 +547,8 @@ class db_mysql{
 	
 	/**
 	 * 返回二维数组，与query方法结合使用
-	 * @param  resource
+	 * @param  resource $query
+	 * @param  int $result_type 结果类型，默认MYSQL_ASSOC
 	 * @return array
 	 */		
     public function fetch_all($query, $result_type = MYSQL_ASSOC) {
@@ -630,7 +631,7 @@ class db_mysql{
 	/**
 	 * 获取数据表主键
 	 * @param $table 		数据表 可选
-	 * @return array
+	 * @return string
 	 */
 	public function get_primary($table = '') {
 		$table = empty($table) ? $this->get_tablename() : $table;

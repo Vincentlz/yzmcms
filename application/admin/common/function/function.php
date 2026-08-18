@@ -116,20 +116,39 @@ function downfile($url, $md5){
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 5000); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); 
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_REFERER, SITE_URL);
         $content = curl_exec($ch);
         safe_curl_close($ch);
     } else {
-        $content = @file_get_contents($url);
+        $context = stream_context_set_default(array(
+            'http' => array('timeout'=>20, 'method'=>'GET', 'header'=>'Referer: '.SITE_URL."\r\n")
+        ));
+        $content = @file_get_contents($url, false, $context);
     }
 
     if(!$content) return array('status'=>0, 'message'=>'升级包下载失败，请重试！');
 
-    $filename = explode('/', $url);    
-    $filename = end($filename);
+    if(!strstr($url, '?')) {
+		$filename = basename($url);
+	}else{
+		$url_parts = parse_url($url);
+		if(isset($url_parts['query'])) {
+			parse_str($url_parts['query'], $query);
+			if(isset($query['filename'])) {
+				$filename = $query['filename'];
+			} elseif(isset($query['name'])) {
+				$filename = $query['name'];
+			} elseif(isset($query['file'])) {
+				$filename = $query['file'];
+			}else{
+				$filename = 'download_' . date('Ymd_His') . '.zip';
+			}
+		}
+	}
     $downname = YZMPHP_PATH.'cache/down_package/'.$filename;
     $fp = fopen($downname, 'w');
     fwrite($fp, $content);
@@ -144,12 +163,25 @@ function downfile($url, $md5){
 
 function unzips($filename, $unzip_folder){
     if(!is_file($filename)) return array('status'=>0, 'message'=>'将解压的文件不存在！');
-
     $zip = new ZipArchive();
-    if (!$zip->open($filename)) {
-        return array('status'=>0, 'message'=>'解压升级包失败！');
-    }
+    $result = $zip->open($filename);
 
+    if($result !== true) {
+        $error_messages = array(
+            ZipArchive::ER_EXISTS => '文件已存在',
+            ZipArchive::ER_INCONS => 'ZIP 文件不一致',
+            ZipArchive::ER_INVAL => '无效的参数',
+            ZipArchive::ER_MEMORY => '内存分配失败',
+            ZipArchive::ER_NOENT => '文件不存在',
+            ZipArchive::ER_NOZIP => '不是 ZIP 文件',
+            ZipArchive::ER_OPEN => '无法打开文件',
+            ZipArchive::ER_READ => '读取错误',
+            ZipArchive::ER_SEEK => '定位错误',
+		);
+        $error_msg = isset($error_messages[$result]) ? $error_messages[$result] : '解压升级包失败！';
+        return array('status'=>0, 'message'=>$error_msg);
+    }
+    
     $zip->extractTo($unzip_folder);
     $zip->close();
     return array('status'=>1, 'message'=>'解压成功！');
